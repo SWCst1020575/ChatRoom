@@ -19,6 +19,9 @@ const chatRoomStyles = theme => ({
 class Chatroom extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            nowRoomID: ""
+        }
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 // User is signed in.

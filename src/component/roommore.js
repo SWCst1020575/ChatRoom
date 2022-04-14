@@ -19,13 +19,13 @@ export default function RoomMoreButton() {
     return (
         <Box sx={{ position: 'relative', width: '40px', height: '40px' }}>
             <SpeedDial
-                ariaLabel="SpeedDial tooltip example"
-                sx={{}}
+                ariaLabel="More"
                 icon={<MoreIcon fontSize="large" />}
                 onClose={handleClose}
                 onOpen={handleOpen}
                 open={open}
                 direction="down"
+                sx={{ position: 'absolute' }}
                 FabProps={{ size: "small", style: { boxShadow: 'none', backgroundColor: "transparent", color: 'white' } }}
             >
                 <SpeedDialAction

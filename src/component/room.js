@@ -5,9 +5,11 @@ import {
     Stack,
     Avatar,
     Typography,
+    Container
 } from '@mui/material';
 import {
-    MoreHoriz as MoreIcon,
+    Image as ImageIcon,
+    Send as SendIcon
 } from '@mui/icons-material';
 import { withStyles } from '@mui/styles';
 import RoomMoreButton from './roommore';
@@ -34,11 +36,23 @@ const roomStyles = theme => ({
     topButtonStyle: {
         borderColor: 'transparent !important',
         backgroundColor: 'transparent',
+    },
+    sendButtonStyle: {
+        height: '55px',
+        width: '55px',
+        marginRight: '10px !important'
+    },
+    sendButtonIconStyle: {
+        height: '34px !important',
+        width: '34px !important'
     }
 });
 class Room extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            roomName: 'Room Name',
+        }
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 // User is signed in.
@@ -63,7 +77,7 @@ class Room extends React.Component {
                             <Typography
                                 sx={{ marginLeft: '30px', fontSize: '22px' }}
                             >
-                                Room Name
+                                {this.state.roomName}
                             </Typography>
                         </Stack>
                     </Grid >
@@ -88,7 +102,15 @@ class Room extends React.Component {
                 <div id="roomSubmitDiv" className={this.props.classes.roomSubmitDiv}>
                     <textarea
                         type="text" id="chatContent" placeholder="Send a message."
-                        onChange={() => { console.log(123) }} />
+                    />
+                    <div id="sendButtonDiv">
+                        <IconButton id="addImageButton" className={this.props.classes.sendButtonStyle}>
+                            <ImageIcon className={this.props.classes.sendButtonIconStyle} />
+                        </IconButton>
+                        <IconButton id="sendMsgButton" className={this.props.classes.sendButtonStyle}>
+                            <SendIcon className={this.props.classes.sendButtonIconStyle} />
+                        </IconButton>
+                    </div>
                 </div>
             </Grid>
         );

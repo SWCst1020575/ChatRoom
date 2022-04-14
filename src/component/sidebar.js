@@ -6,16 +6,14 @@ import {
     Paper,
     Stack,
     ButtonGroup,
-    Button,
-    IconButton
+    Button
 } from '@mui/material';
 import {
-    Logout as LogoutIcon,
-    AddCircleOutline as AddRoomIcon,
-    AccountCircle as ProfileSettingIcon,
-    ArrowDropDown as DropDownIcon
+    Logout as LogoutIcon
 } from '@mui/icons-material';
 import RoomList from './roomlist';
+import MyProfile from './myprofile';
+import CreateRoomDialog from './createroomdialog'
 import { withStyles } from '@mui/styles';
 
 const sideBarStyles = theme => ({
@@ -58,6 +56,10 @@ const sideBarStyles = theme => ({
 class SideBar extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            myUserName: 'My Name',
+            myUserPhotoUrl: ''
+        }
     };
     componentDidMount() {
     };
@@ -66,6 +68,15 @@ class SideBar extends React.Component {
         for (var i = 0; i < 15; i++)
             renderList.push(<RoomList />)
         return (renderList);
+    }
+    userLogout() {
+        firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+            window.location.href = "/signin";
+        }).catch((error) => {
+            // An error happened.
+
+        });
     }
     render() {
         return (
@@ -93,7 +104,7 @@ class SideBar extends React.Component {
                             justifyContent="center"
                             elevation={0}
                             component={Stack}>
-                            My Name
+                            {this.state.myUserName}
                         </Paper>
                     </Grid>
                     <Grid item xs={3}>
@@ -104,10 +115,7 @@ class SideBar extends React.Component {
                             alignItems="center"
                             elevation={0}
                             component={Stack}>
-                            <IconButton size="large" edge='False' sx={{ ...(sideBarStyles().bottomButtonStyle), color: "white" }}>
-                                <ProfileSettingIcon sx={{ height: "40px", width: "40px", left: "3px", position: "relative" }} />
-                                <DropDownIcon sx={{ left: "-3px", position: "relative" }} />
-                            </IconButton >
+                            <MyProfile />
                         </Paper>
                     </Grid>
                 </Grid>
@@ -117,16 +125,7 @@ class SideBar extends React.Component {
                     </List>
                 </Container>
                 <Grid container id="sideBarBottom" sx={{ justifyContent: "center", alignItems: "center" }} className={this.props.classes.sideBarBottom}>
-                    <ButtonGroup variant="contained" size="large" aria-label="small button group" sx={{ width: '100%', height: '100%' }}>
-                        <Button sx={{ ...(sideBarStyles().bottomButtonStyle), width: '50%', fontSize: '20px', fontFamily: 'functionFont' }}>
-                            <AddRoomIcon sx={{ width: '28px', height: '28px', marginRight: '8px' }} />
-                            Create
-                        </Button>
-                        <Button sx={{ ...(sideBarStyles().bottomButtonStyle), width: '50%', fontSize: '20px', fontFamily: 'functionFont' }}>
-                            <LogoutIcon sx={{ width: '28px', height: '28px', marginRight: '8px' }} />
-                            Logout
-                        </Button>
-                    </ButtonGroup>
+                    <CreateRoomDialog logoutFun={this.userLogout} />
                 </Grid>
             </Grid>
         );
