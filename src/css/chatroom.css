@@ -1,0 +1,66 @@
+#roomNameDiv,
+#roomContentDiv,
+#roomSubmitDiv {
+    margin: auto 0;
+    padding: 0 0 0 0;
+    width: 100%;
+}
+
+#chatContent {
+    font-size: 24px !important;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: calc(100% - 120px);
+    height: 80%;
+    top: 10%;
+    margin-left: 12px;
+    position: absolute;
+    font-size: 20px;
+    max-height: 95px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    padding: 10px 15px 10px 15px;
+    line-height: 30px;
+}
+
+#root,
+#reactRender {
+    height: 100%;
+}
+
+#chatroomDiv {
+    height: 100%;
+}
+
+#roomListDiv {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+/* width */
+
+#roomSubmitDiv>::-webkit-scrollbar {
+    width: 1px;
+}
+
+#roomListDiv>::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+#roomListDiv>::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 2px grey;
+    background: #2c3e50;
+    border-radius: 10px;
+}
+
+/* Handle */
+#roomListDiv>::-webkit-scrollbar-thumb {
+    background: rgb(52, 96, 139);
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+#roomListDiv>::-webkit-scrollbar-thumb:hover {
+    background: #9f9f9f;
+}

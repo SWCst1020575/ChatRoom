@@ -1,0 +1,42 @@
+{
+  "name": "chatroom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "webpack-dev-server --devtool eval"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/software_studio_2022/student/chatroom.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/software_studio_2022/student/chatroom/issues"
+  },
+  "homepage": "https://gitlab.com/software_studio_2022/student/chatroom#readme",
+  "devDependencies": {
+    "@babel/core": "^7.17.9",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "babel-loader": "^8.2.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.1"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/lab": "^4.0.0-alpha.61",
+    "@mui/icons-material": "^5.6.1",
+    "@mui/material": "^5.6.1",
+    "@mui/styles": "^5.6.1",
+    "react-router-dom": "^6.3.0",
+    "react-window": "^1.8.6"
+  }
+}
