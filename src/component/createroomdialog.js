@@ -16,7 +16,6 @@ import {
     Logout as LogoutIcon,
     Image as ImageIcon,
 } from '@mui/icons-material';
-import { ClassNames } from '@emotion/react';
 const sideBarStyles = theme => ({
     buttonStyle: {
         borderColor: 'transparent !important',
@@ -33,30 +32,42 @@ export default function CreateRoomDialog(props) {
         severity: '',
         content: ''
     });
-    const [roomProfile, setRoomProfile] = React.useState({
-        roomName: '',
-        roomPhotoUrl: '',
-        roomContent: {}
-    });
     const [imageFileName, setImageFileName] = React.useState('Select image as room photo.');
     const handleDialogClickOK = () => {
         var newRoomName = document.getElementById('createRoomNameInput').value;
+        var newRoomImageFileName = imageFileName
         if (newRoomName == '')
             newRoomName = 'Room Name';
-        if (imageFileName == 'Select image as room photo.')
-            setImageFileName('');
-        setAlertType({
-            severity: 'success',
-            content: 'Create room successfully!'
-        })
-        setRoomProfile({
-            roomName: newRoomName,
-            roomPhotoUrl: imageFileName,
-            roomContent: {}
-        })
-        setDialogOpen(false);
-        setSnackbarOpen(true);
-
+        if (newRoomImageFileName == 'Select image as room photo.')
+            newRoomImageFileName = 'default'
+        var nowTime = new Date;
+        firebase.database().ref('RoomList').push({
+            RoomName: newRoomName,
+            RoomPhotoUrl: newRoomImageFileName,
+            RoomLatestContent: '(Empty)',
+            RoomLatestContentDate: nowTime.getTime(),
+            RoomContentNum: 0,
+            RoomMemberList: [props.myEmail],
+            RoomContent: {}
+        }).then((snapshot) => {
+            const RoomKey = snapshot.key;
+            firebase.database().ref('UserData/' + props.myID).once("value", userSnapshot => {
+                var userData = userSnapshot.val();
+                var roomList = [];
+                if ('UserRoomList' in userData)
+                    for (var key in userData['UserRoomList'])
+                        roomList.push((userData.UserRoomList)[key]);
+                roomList.push({ RoomID: RoomKey, RoomFinalUpdateDate: nowTime.getTime(), RoomFinalUpdateNum: 0 });
+                firebase.database().ref('UserData/' + props.myID + '/UserRoomList').update(roomList).then(() => {
+                    setAlertType({
+                        severity: 'success',
+                        content: 'Create room successfully'
+                    })
+                    setDialogOpen(false);
+                    setSnackbarOpen(true);
+                });
+            })
+        });
     };
     const handleClickOpen = () => {
         setDialogOpen(true);
@@ -90,7 +101,21 @@ export default function CreateRoomDialog(props) {
                                 for (var i in validExt)
                                     if (validExt[i] == fileExt)
                                         isValid = true;
-                                if (fileName != '' && isValid)
+                                if (fileName == '') {
+                                    setAlertType({
+                                        severity: 'warning',
+                                        content: 'Please choose a file'
+                                    })
+                                    setSnackbarOpen(true);
+                                }
+                                else if (!isValid) {
+                                    setAlertType({
+                                        severity: 'error',
+                                        content: 'This file type is not allowed'
+                                    })
+                                    setSnackbarOpen(true);
+                                }
+                                else
                                     setImageFileName(fileName)
                             }} id="roomPhotoUploadFileButton" type="file" accept=".png,.jpg,.jpeg,.png,.ico,.bmp" hidden />
                         </IconButton>
@@ -111,14 +136,14 @@ export default function CreateRoomDialog(props) {
                         <Button variant="standard" onClick={handleDialogClickOK}>OK</Button>
                     </DialogActions>
                 </Dialog>
-                <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
+                <Snackbar open={snackbarOpen} autoHideDuration={4000} onClose={handleSnackbarClose}>
                     <Alert onClose={handleSnackbarClose} severity={alertType.severity} sx={{ fontSize: '18px', width: '100%' }}>
                         {alertType.content}
                     </Alert>
                 </Snackbar>
                 <Button
                     className="sidebarButtonStyle"
-                    onClick={() => { props.userLogout() }}
+                    onClick={() => { props.logoutFun() }}
                     sx={{ ...(sideBarStyles().bottomButtonStyle), width: '50%', fontSize: '20px', fontFamily: 'functionFont' }}>
                     <LogoutIcon sx={{ width: '28px', height: '28px', marginRight: '8px' }} />
                     Logout

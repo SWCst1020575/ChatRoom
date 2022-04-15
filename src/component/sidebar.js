@@ -4,14 +4,9 @@ import {
     Container,
     List,
     Paper,
-    Stack,
-    ButtonGroup,
-    Button
+    Stack
 } from '@mui/material';
-import {
-    Logout as LogoutIcon
-} from '@mui/icons-material';
-import RoomList from './roomlist';
+import GenerateRoomList from './generateRoomList';
 import MyProfile from './myprofile';
 import CreateRoomDialog from './createroomdialog'
 import { withStyles } from '@mui/styles';
@@ -57,18 +52,14 @@ class SideBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            myUserName: 'My Name',
-            myUserPhotoUrl: ''
-        }
+            UserID: '',
+            displayRoomList: []
+        };
+
     };
     componentDidMount() {
+
     };
-    roomListRender = () => {
-        var renderList = [];
-        for (var i = 0; i < 15; i++)
-            renderList.push(<RoomList />)
-        return (renderList);
-    }
     userLogout() {
         firebase.auth().signOut().then(() => {
             // Sign-out successful.
@@ -92,22 +83,22 @@ class SideBar extends React.Component {
                             component={Stack}>
                             <Avatar
                                 alt="myPic"
-                                src="/src/img/defaultUserIcon.png"
+                                src={this.props.myUserData.UserPhotoUrl}
                                 sx={{ width: 64, height: 64, }}
                             />
                         </Paper>
                     </Grid >
-                    <Grid item xs={5}>
+                    <Grid item xs={4.5}>
                         <Paper
                             sx={{ backgroundColor: 'transparent', color: 'white' }}
                             className={this.props.classes.functionText}
                             justifyContent="center"
                             elevation={0}
                             component={Stack}>
-                            {this.state.myUserName}
+                            {this.props.myUserData.UserName}
                         </Paper>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={3.5}>
                         <Paper
                             sx={{ backgroundColor: 'transparent', color: 'white' }}
                             className={this.props.classes.functionText}
@@ -120,12 +111,10 @@ class SideBar extends React.Component {
                     </Grid>
                 </Grid>
                 <Container id="roomListDiv" className={this.props.classes.roomListDiv}>
-                    <List className={this.props.classes.roomListStyle} sx={{ paddingColor: '#2c3e50', paddingTop: "0px", paddingBottom: '0px', width: '100%', bgcolor: 'background.paper' }}>
-                        {this.roomListRender()}
-                    </List>
+                    <GenerateRoomList UserID={this.props.myUserData.UserID} className={this.props.classes.roomListStyle} />
                 </Container>
                 <Grid container id="sideBarBottom" sx={{ justifyContent: "center", alignItems: "center" }} className={this.props.classes.sideBarBottom}>
-                    <CreateRoomDialog logoutFun={this.userLogout} />
+                    <CreateRoomDialog myID={this.props.myUserData.UserID} myEmail={this.props.myUserData.UserEmail} logoutFun={this.userLogout} />
                 </Grid>
             </Grid>
         );

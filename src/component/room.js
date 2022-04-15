@@ -4,8 +4,7 @@ import {
     IconButton,
     Stack,
     Avatar,
-    Typography,
-    Container
+    Typography
 } from '@mui/material';
 import {
     Image as ImageIcon,

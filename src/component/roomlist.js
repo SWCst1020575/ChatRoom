@@ -1,7 +1,5 @@
 import {
-    Typography,
     Avatar,
-    List,
     ListItem,
     ListItemButton,
     ListItemAvatar,
@@ -21,6 +19,7 @@ const roomListStyles = theme => ({
         },
     }
 });
+// TODO :: Rewrite class component to Hook.
 class RoomList extends React.Component {
     constructor(props) {
         super(props);

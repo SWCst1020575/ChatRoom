@@ -61,7 +61,7 @@ class LoginForm extends React.Component {
                         UserPhotoUrl: user.photoURL,
                         UserRoomList: {}
                     });
-                };
+                }   
             }).then(() => {
                 window.location.href = "/";
             })

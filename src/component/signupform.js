@@ -43,7 +43,7 @@ class SignUpForm extends React.Component {
             firebase.database().ref('UserData').push({
                 UserName: username,
                 UserEmail: email,
-                UserPhotoUrl: "",
+                UserPhotoUrl: "default",
                 UserRoomList: {}
             }).then(() => { window.location.href = "/signin"; });
         }).catch((error) => {

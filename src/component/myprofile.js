@@ -6,8 +6,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    IconButton,
-    Typography
+    IconButton
 } from '@mui/material';
 import {
     AccountCircle as ProfileSettingIcon,
@@ -35,7 +34,7 @@ export default function MyProfile() {
     };
     return (
         <div>
-            <IconButton onClick={handleClickOpen} size="large" edge='False' sx={{ ...(sideBarStyles().buttonStyle), color: "white" }}>
+            <IconButton onClick={handleClickOpen} size="small" edge='False' sx={{ ...(sideBarStyles().buttonStyle), color: "white" }}>
                 <ProfileSettingIcon sx={{ height: "40px", width: "40px", left: "3px", position: "relative" }} />
                 <DropDownIcon sx={{ left: "-3px", position: "relative" }} />
             </IconButton >

@@ -57,7 +57,6 @@ export class Root extends React.Component {
             );
     }
     checkLogined = () => {
-        console.log(12);
     }
     render() {
         return (
@@ -73,6 +72,7 @@ export class Root extends React.Component {
                         <Route path='/signin' element={
                             <LoginForm
                                 setAlertState={this.setAlertState}
+                                setUserData={this.setUserData}
                             />
                         } />
                         <Route path="/signup" element={
