@@ -46,7 +46,7 @@ export default function CreateRoomDialog(props) {
             RoomPhotoUrl: newRoomImageFileName,
             RoomLatestContent: '(Empty)',
             RoomLatestContentDate: nowTime.getTime(),
-            RoomContentNum: 0,
+            RoomContentNum: 1,
             RoomMemberList: [props.myID],
             RoomContent: {}
         }).then((snapshot) => {
@@ -66,6 +66,12 @@ export default function CreateRoomDialog(props) {
                     setDialogOpen(false);
                     setSnackbarOpen(true);
                 });
+            });
+            firebase.database().ref('RoomContent/' + RoomKey).push({
+                user: 'prompt',
+                content: 'Room has been created.',
+                time: nowTime.getTime(),
+                userPhotoUrl: ''
             })
         });
     };

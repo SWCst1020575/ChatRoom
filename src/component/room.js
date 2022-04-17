@@ -61,6 +61,8 @@ class Room extends React.Component {
             firebase.database().ref('RoomList/' + this.props.roomID).on('value', (snapshot) => {
                 var RoomData = snapshot.val();
                 var nowState = componentThis.state;
+                if (RoomData.RoomPhotoUrl == 'default')
+                    RoomData.RoomPhotoUrl = '/src/img/defaultRoomIcon.png';
                 nowState["roomData"] = RoomData;
                 nowState["isInRoom"] = true;
                 componentThis.setState(nowState);
@@ -73,8 +75,7 @@ class Room extends React.Component {
             firebase.database().ref('RoomContent/' + this.props.roomID).push({
                 user: this.props.myUserData.UserID,
                 content: msgInput,
-                time: nowTime.getTime(),
-                userPhotoUrl: this.props.myUserData.UserPhotoUrl
+                time: nowTime.getTime()
             })
             firebase.database().ref('RoomList/' + this.props.roomID).once("value", snapshot => {
                 var roomData = snapshot.val();
@@ -94,7 +95,7 @@ class Room extends React.Component {
                         <Stack direction="row" alignItems="center" sx={{ top: '50%', transform: 'translateY(-50%)', position: 'relative' }} >
                             <Avatar
                                 alt="myPic"
-                                src="/src/img/defaultUserIcon.png"
+                                src={this.state.roomData.RoomPhotoUrl}
                                 sx={{ width: '56px', height: '56px', marginLeft: '50px' }}
                             />
                             <Typography
@@ -120,7 +121,7 @@ class Room extends React.Component {
                     </Grid>
                 </Grid>
                 <div id="roomContentDiv" className={this.props.classes.roomContentDiv}>
-                    <GenerateMsg />
+                    <GenerateMsg myUserData={this.props.myUserData} roomID={this.props.roomID} />
                 </div>
                 <div id="roomSubmitDiv" className={this.props.classes.roomSubmitDiv}>
                     <textarea

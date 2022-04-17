@@ -25,6 +25,8 @@ export default function RoomList(props) {
         setIsLoading(true);
         firebase.database().ref('RoomList/' + props.userListData.RoomID).on('value', (snapshot) => {
             var nowRoomData = snapshot.val();
+            if (nowRoomData.RoomPhotoUrl == 'default')
+                nowRoomData.RoomPhotoUrl = '/src/img/defaultRoomIcon.png';
             setRoomData(nowRoomData);
             setIsLoading(false);
         });
@@ -34,7 +36,7 @@ export default function RoomList(props) {
             <ListItemButton onClick={() => { props.setNowRoomID(props.userListData.RoomID); }}>
                 <ListItem alignItems="flex-start">
                     <ListItemAvatar>
-                        <Avatar alt="Remy Sharp" src="/src/img/defaultUserIcon.png" />
+                        <Avatar alt="Remy Sharp" src={roomData.RoomPhotoUrl} />
                     </ListItemAvatar>
                     <ListItemText
                         primary={<Container sx={{ paddingLeft: "0px !important", color: 'white', fontSize: "24px" }}>
