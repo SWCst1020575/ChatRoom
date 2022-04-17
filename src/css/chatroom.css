@@ -1,13 +1,22 @@
 #roomNameDiv,
-#roomContentDiv,
 #roomSubmitDiv {
     margin: auto 0;
     padding: 0 0 0 0;
     width: 100%;
     position: relative;
 }
+#roomDiv{
+    height: 100%;
+}
+#roomContentDiv{
+    margin: auto 0;
+    padding: 0 0 0 0;
+    width: 100%;
+    position: relative;
+    overflow-y: scroll;
+}
 
-#chatContent {
+#msgContent {
     font-size: 24px !important;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -56,6 +65,7 @@
     background-color: transparent !important;
 
 }
+
 .sidebarButtonStyle:hover {
     background-color: #435f7a !important;
 }
@@ -64,24 +74,48 @@
     width: 1px;
 }
 
+#roomList {
+    border-color: transparent !important;
+    background-color: #2c3e50;
+    border-top: 0.5;
+    border-color: grey;
+}
+
+#roomList:hover {
+    background-color: #435f7a;
+}
+
 #roomListDiv>::-webkit-scrollbar {
     width: 5px;
 }
 
-/* Track */
+
 #roomListDiv>::-webkit-scrollbar-track {
     box-shadow: inset 0 0 2px grey;
     background: #2c3e50;
     border-radius: 10px;
 }
-
-/* Handle */
 #roomListDiv>::-webkit-scrollbar-thumb {
     background: rgb(52, 96, 139);
     border-radius: 10px;
 }
-
-/* Handle on hover */
 #roomListDiv>::-webkit-scrollbar-thumb:hover {
+    background: #9f9f9f;
+}
+
+.othersMsg{
+    background-color: white;
+}
+
+#roomContentDiv>::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 2px grey;
+    background: #2c3e50;
+    border-radius: 10px;
+}
+#roomContentDiv>::-webkit-scrollbar-thumb {
+    background: rgb(52, 96, 139);
+    border-radius: 10px;
+}
+#roomContentDiv>::-webkit-scrollbar-thumb:hover {
     background: #9f9f9f;
 }

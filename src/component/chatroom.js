@@ -27,10 +27,10 @@ class Chatroom extends React.Component {
         let componentThis = this;
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
-                firebase.database().ref('UserData').orderByChild("UserEmail").equalTo(user.email).once("value", snapshot => {
+                firebase.database().ref('UserData').orderByChild("UserEmail").equalTo(user.email).on("value", snapshot => {
                     var nowData = (Object.values(snapshot.val()))[0];
                     componentThis.nowUserData = {
-                        UserID: Object.keys(snapshot.val()),
+                        UserID: Object.keys(snapshot.val())[0],
                         UserName: nowData.UserName,
                         UserEmail: nowData.UserEmail,
                         UserPhotoUrl: nowData.UserPhotoUrl,
@@ -38,7 +38,6 @@ class Chatroom extends React.Component {
                     }
                     if (componentThis.nowUserData.UserPhotoUrl == 'default')
                         componentThis.nowUserData.UserPhotoUrl = '/src/img/defaultUserIcon.png';
-                }).then(() => {
                     var nowState = componentThis.state;
                     nowState.UserData = componentThis.nowUserData;
                     nowState.isLoading = false;
@@ -49,13 +48,21 @@ class Chatroom extends React.Component {
             }
         });
     };
+    setNowRoomID = (roomID) => {
+        var nowState = this.state;
+        nowState["nowRoomID"] = roomID;
+        this.setState(nowState);
+    }
+    componentDidUpdate() {
+    };
     componentDidMount() {
+
     };
     render() {
         return (
             <Grid container id="chatroomDiv">
-                <SideBar myUserData={this.state.UserData} />
-                <Room />
+                <SideBar setNowRoomID={this.setNowRoomID} myUserData={this.state.UserData} />
+                <Room myUserData={this.state.UserData} roomID={this.state.nowRoomID} />
                 <Dialog open={this.state.isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>
                     <DialogContent >
                         <CircularProgress size={70} />

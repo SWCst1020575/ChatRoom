@@ -4,7 +4,7 @@ import {
     IconButton,
     Stack,
     Avatar,
-    Typography
+    Typography,
 } from '@mui/material';
 import {
     Image as ImageIcon,
@@ -12,6 +12,7 @@ import {
 } from '@mui/icons-material';
 import { withStyles } from '@mui/styles';
 import RoomMoreButton from './roommore';
+import GenerateMsg from './roomContent/generateMsg'
 const roomStyles = theme => ({
     roomStyle: {
         backgroundColor: '#a5ded7',
@@ -50,18 +51,41 @@ class Room extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            roomName: 'Room Name',
+            roomData: { RoomName: 'Room Name' },
+            isInRoom: false
         }
-        firebase.auth().onAuthStateChanged(function (user) {
-            if (user) {
-                // User is signed in.
-            } else {
-                window.location.href = "/signin";
-            }
-        });
     };
-    componentDidMount() {
+    componentDidUpdate(prevProps) {
+        var componentThis = this;
+        if (this.props.roomID != prevProps.roomID)
+            firebase.database().ref('RoomList/' + this.props.roomID).on('value', (snapshot) => {
+                var RoomData = snapshot.val();
+                var nowState = componentThis.state;
+                nowState["roomData"] = RoomData;
+                nowState["isInRoom"] = true;
+                componentThis.setState(nowState);
+            });
     };
+    sendMsg = () => {
+        var msgInput = document.getElementById('msgContent').value;
+        if (this.state.isInRoom && msgInput != '') {
+            var nowTime = new Date;
+            firebase.database().ref('RoomContent/' + this.props.roomID).push({
+                user: this.props.myUserData.UserID,
+                content: msgInput,
+                time: nowTime.getTime(),
+                userPhotoUrl: this.props.myUserData.UserPhotoUrl
+            })
+            firebase.database().ref('RoomList/' + this.props.roomID).once("value", snapshot => {
+                var roomData = snapshot.val();
+                roomData['RoomContentNum'] = roomData['RoomContentNum'] + 1;
+                roomData['RoomLatestContent'] = msgInput;
+                roomData['RoomLatestContentDate'] = nowTime.getTime();
+                firebase.database().ref('RoomList/' + this.props.roomID).update(roomData)
+            })
+            document.getElementById('msgContent').value = '';
+        }
+    }
     render() {
         return (
             <Grid id="roomDiv" className={this.props.classes.roomStyle} item xs={10} md={9}>
@@ -76,7 +100,7 @@ class Room extends React.Component {
                             <Typography
                                 sx={{ marginLeft: '30px', fontSize: '22px' }}
                             >
-                                {this.state.roomName}
+                                {this.state.roomData.RoomName}
                             </Typography>
                         </Stack>
                     </Grid >
@@ -96,17 +120,19 @@ class Room extends React.Component {
                     </Grid>
                 </Grid>
                 <div id="roomContentDiv" className={this.props.classes.roomContentDiv}>
-
+                    <GenerateMsg />
                 </div>
                 <div id="roomSubmitDiv" className={this.props.classes.roomSubmitDiv}>
                     <textarea
-                        type="text" id="chatContent" placeholder="Send a message."
+                        type="text" id="msgContent" placeholder="Send a message."
                     />
                     <div id="sendButtonDiv">
                         <IconButton id="addImageButton" className={this.props.classes.sendButtonStyle}>
                             <ImageIcon className={this.props.classes.sendButtonIconStyle} />
                         </IconButton>
-                        <IconButton id="sendMsgButton" className={this.props.classes.sendButtonStyle}>
+                        <IconButton id="sendMsgButton"
+                            className={this.props.classes.sendButtonStyle}
+                            onClick={() => this.sendMsg()}>
                             <SendIcon className={this.props.classes.sendButtonIconStyle} />
                         </IconButton>
                     </div>

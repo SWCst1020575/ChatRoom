@@ -55,10 +55,8 @@ class SideBar extends React.Component {
             UserID: '',
             displayRoomList: []
         };
-
     };
-    componentDidMount() {
-
+    componentDidUpdate() {
     };
     userLogout() {
         firebase.auth().signOut().then(() => {
@@ -106,12 +104,17 @@ class SideBar extends React.Component {
                             alignItems="center"
                             elevation={0}
                             component={Stack}>
-                            <MyProfile />
+                            <MyProfile userName={this.props.myUserData.UserName} />
                         </Paper>
                     </Grid>
                 </Grid>
                 <Container id="roomListDiv" className={this.props.classes.roomListDiv}>
-                    <GenerateRoomList UserID={this.props.myUserData.UserID} className={this.props.classes.roomListStyle} />
+                    <GenerateRoomList
+                        setNowRoomID={this.props.setNowRoomID}
+                        offLoading={this.props.offLoading}
+                        roomList={this.props.myUserData.UserRoomList}
+                        UserID={this.props.myUserData.UserID}
+                        className={this.props.classes.roomListStyle} />
                 </Container>
                 <Grid container id="sideBarBottom" sx={{ justifyContent: "center", alignItems: "center" }} className={this.props.classes.sideBarBottom}>
                     <CreateRoomDialog myID={this.props.myUserData.UserID} myEmail={this.props.myUserData.UserEmail} logoutFun={this.userLogout} />

@@ -47,7 +47,7 @@ export default function CreateRoomDialog(props) {
             RoomLatestContent: '(Empty)',
             RoomLatestContentDate: nowTime.getTime(),
             RoomContentNum: 0,
-            RoomMemberList: [props.myEmail],
+            RoomMemberList: [props.myID],
             RoomContent: {}
         }).then((snapshot) => {
             const RoomKey = snapshot.key;

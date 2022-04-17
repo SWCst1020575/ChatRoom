@@ -13,6 +13,7 @@ import {
     ArrowDropDown as DropDownIcon,
     Image as ImageIcon,
 } from '@mui/icons-material';
+import React from 'react';
 const sideBarStyles = theme => ({
     buttonStyle: {
         borderColor: 'transparent !important',
@@ -22,7 +23,7 @@ const sideBarStyles = theme => ({
         },
     }
 });
-export default function MyProfile() {
+export default function MyProfile(props) {
     const [open, setOpen] = React.useState(false);
     const [imageFileName, setImageFileName] = React.useState('Select image as your photo.');
     const [myUserName, setMyUserName] = React.useState('');
@@ -32,6 +33,9 @@ export default function MyProfile() {
     const handleClose = () => {
         setOpen(false);
     };
+    React.useEffect(()=>{
+        setMyUserName(props.userName);
+    },[props.userName])
     return (
         <div>
             <IconButton onClick={handleClickOpen} size="small" edge='False' sx={{ ...(sideBarStyles().buttonStyle), color: "white" }}>
