@@ -23,7 +23,7 @@ export default function RoomList(props) {
     const [isLoading, setIsLoading] = React.useState(false);
     React.useEffect(() => {
         setIsLoading(true);
-        firebase.database().ref('RoomList/' + props.userListData.RoomID).on('value', (snapshot) => {
+        firebase.database().ref('RoomList/' + props.userListData.RoomID).once('value', (snapshot) => {
             var nowRoomData = snapshot.val();
             if (nowRoomData.RoomPhotoUrl == 'default')
                 nowRoomData.RoomPhotoUrl = '/src/img/defaultRoomIcon.png';
@@ -31,9 +31,27 @@ export default function RoomList(props) {
             setIsLoading(false);
         });
     }, [props.userListData]);
+    const clickRoom = (RoomID) => {
+        props.setNowRoomID(RoomID);
+        firebase.database().ref('UserData/' + props.userID + '/UserRoomList').orderByChild("RoomID").equalTo(RoomID).once('value', (snapshot) => {
+            firebase.database().ref('UserData/' + props.userID + '/UserRoomList/' + Object.keys(snapshot.val())[0]).update({
+                RoomFinalUpdateNum: roomData.RoomContentNum,
+                RoomFinalUpdateDate: roomData.RoomLatestContentDate,
+                RoomID: RoomID
+            })
+        });
+    }
+    const showUnread = () => {
+        if (roomData.RoomContentNum > props.userListData.RoomFinalUpdateNum)
+            return (
+                <ListItemAvatar>
+                    <Avatar sx={{ bgcolor: '#2a3dc2' }}>{roomData.RoomContentNum - props.userListData.RoomFinalUpdateNum}</Avatar>
+                </ListItemAvatar>
+            )
+    }
     return (
         <Box id="roomList">
-            <ListItemButton onClick={() => { props.setNowRoomID(props.userListData.RoomID); }}>
+            <ListItemButton onClick={() => { clickRoom(props.userListData.RoomID) }}>
                 <ListItem alignItems="flex-start">
                     <ListItemAvatar>
                         <Avatar alt="Remy Sharp" src={roomData.RoomPhotoUrl} />
@@ -43,11 +61,12 @@ export default function RoomList(props) {
                             {roomData.RoomName}
                         </Container>}
                         secondary={
-                            <Container sx={{ textOverflow: 'ellipsis', paddingLeft: "12px !important", color: 'white', fontSize: "18px" }}>
+                            <Container sx={{ wordWrap: 'break-word', textOverflow: 'ellipsis', paddingLeft: "12px !important", color: 'white', fontSize: "18px" }}>
                                 {roomData.RoomLatestContent}
                             </Container>
                         }
                     />
+                    {showUnread()}
                 </ListItem>
             </ListItemButton>
             <Dialog open={isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>

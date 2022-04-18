@@ -4,15 +4,20 @@ import {
     CardContent,
     CardHeader,
     Avatar,
-    Paper
+    Paper,
+    IconButton
 } from '@mui/material';
-
+import {
+    Delete as DeleteIcon
+} from '@mui/icons-material';
 
 export default function MsgDiv(props) {
     const [msgUserName, setMsgUserName] = React.useState('');
     const [msgUserPhotoUrl, setMsgUserPhotoUrl] = React.useState('');
     const [msgContent, setMsgContent] = React.useState([]);
     React.useEffect(() => {
+        if (props.type == 'prompt')
+            return;
         firebase.database().ref('UserData/' + props.userID).once("value", snapshot => {
             var userData = snapshot.val();
             setMsgUserName(userData.UserName);
@@ -29,7 +34,7 @@ export default function MsgDiv(props) {
     }, [props.content]);
     if (props.type == 'other')
         return (
-            <Card sx={{ marginLeft: '3%', marginTop: '15px', marginBottom: '15px', maxWidth: '40%', }}>
+            <Card sx={{ wordWrap: 'break-word', marginLeft: '3%', marginTop: '15px', marginBottom: '15px', maxWidth: '40%', }}>
                 <CardContent>
                     <CardHeader
                         avatar={<Avatar src={msgUserPhotoUrl} sx={{ width: '50px', height: '50px', bgcolor: 'azure' }} />}
@@ -42,11 +47,16 @@ export default function MsgDiv(props) {
         );
     else if (props.type == 'self')
         return (
-            <Card sx={{ backgroundColor: '#aaeaff', marginLeft: '57%', marginTop: '15px', marginBottom: '15px', maxWidth: '40%', }}>
+            <Card sx={{ wordWrap: 'break-word', backgroundColor: '#aaeaff', marginLeft: '57%', marginTop: '15px', marginBottom: '15px', maxWidth: '40%', }}>
                 <CardContent>
                     <CardHeader
                         avatar={
                             <Avatar src={msgUserPhotoUrl} sx={{ width: '50px', height: '50px', bgcolor: 'azure' }} />
+                        }
+                        action={
+                            <IconButton aria-label="delete">
+                                <DeleteIcon />
+                            </IconButton>
                         }
                         title={msgUserName}
                         titleTypographyProps={{ fontSize: '28px' }}

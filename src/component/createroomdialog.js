@@ -29,7 +29,7 @@ export default function CreateRoomDialog(props) {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [alertType, setAlertType] = React.useState({
-        severity: '',
+        severity: 'error',
         content: ''
     });
     const [imageFileName, setImageFileName] = React.useState('Select image as room photo.');
@@ -46,7 +46,7 @@ export default function CreateRoomDialog(props) {
             RoomPhotoUrl: newRoomImageFileName,
             RoomLatestContent: '(Empty)',
             RoomLatestContentDate: nowTime.getTime(),
-            RoomContentNum: 1,
+            RoomContentNum: 0,
             RoomMemberList: [props.myID],
             RoomContent: {}
         }).then((snapshot) => {

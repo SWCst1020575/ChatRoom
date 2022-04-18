@@ -13,7 +13,8 @@ export default function GenerateRoomList(props) {
     React.useEffect(() => {
         var roomList = [];
         setIsLoading(true);
-        firebase.database().ref('UserData/' + props.UserID + '/UserRoomList').on('value', (snapshot) => {
+        //firebase.database().ref('UserData/' + props.UserID + '/UserRoomList').off();
+        firebase.database().ref('UserData/' + props.UserID + '/UserRoomList').once('value', (snapshot) => {
             var RoomListData = snapshot.val();
             for (var key in RoomListData)
                 roomList.push(RoomListData[key]);
@@ -25,7 +26,7 @@ export default function GenerateRoomList(props) {
     const roomListRender = () => {
         var renderList = [];
         for (var i in displayRoomList)
-            renderList.push(<RoomList setNowRoomID={props.setNowRoomID} userListData={displayRoomList[i]} />)
+            renderList.push(<RoomList key={displayRoomList[i].RoomID} setNowRoomID={props.setNowRoomID} userID={props.UserID} userListData={displayRoomList[i]} roomKey={i} />)
         //for (var i = 0; i < 15; i++)
 
         return (renderList);

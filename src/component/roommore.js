@@ -12,10 +12,13 @@ import {
     Edit as RoomSettingIcon
 } from '@mui/icons-material';
 
-export default function RoomMoreButton() {
+export default function RoomMoreButton(props) {
+    const [roomData, setRoomData] = React.useState('');
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    if (props.roomID == '')
+        return null;
     return (
         <Box sx={{ position: 'relative', width: '40px', height: '40px' }}>
             <SpeedDial

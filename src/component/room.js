@@ -57,7 +57,8 @@ class Room extends React.Component {
     };
     componentDidUpdate(prevProps) {
         var componentThis = this;
-        if (this.props.roomID != prevProps.roomID)
+        if (this.props.roomID != prevProps.roomID) {
+            firebase.database().ref('RoomList/' + prevProps.roomID).off();
             firebase.database().ref('RoomList/' + this.props.roomID).on('value', (snapshot) => {
                 var RoomData = snapshot.val();
                 var nowState = componentThis.state;
@@ -67,9 +68,11 @@ class Room extends React.Component {
                 nowState["isInRoom"] = true;
                 componentThis.setState(nowState);
             });
+        }
     };
     sendMsg = () => {
         var msgInput = document.getElementById('msgContent').value;
+        const componentThis = this;
         if (this.state.isInRoom && msgInput != '') {
             var nowTime = new Date;
             firebase.database().ref('RoomContent/' + this.props.roomID).push({
@@ -82,28 +85,40 @@ class Room extends React.Component {
                 roomData['RoomContentNum'] = roomData['RoomContentNum'] + 1;
                 roomData['RoomLatestContent'] = msgInput;
                 roomData['RoomLatestContentDate'] = nowTime.getTime();
-                firebase.database().ref('RoomList/' + this.props.roomID).update(roomData)
+                componentThis.setState(roomData);
+                firebase.database().ref('RoomList/' + this.props.roomID).update(roomData);
+
+                for (var userIDinRoom of roomData['RoomMemberList']) {
+                    firebase.database().ref('UserData/' + userIDinRoom + '/UserRoomList').orderByChild("RoomID").equalTo(componentThis.props.roomID).once("value", userSnapshot => {
+                        var roomKey = Object.keys(userSnapshot.val())[0];
+                        firebase.database().ref('UserData/' + userIDinRoom + '/UserRoomList').child(roomKey).update(nowTime.getTime());
+                    })
+                }
             })
             document.getElementById('msgContent').value = '';
         }
+    }
+    showRoomTitle = () => {
+        if (this.props.roomID != '')
+            return (<Stack direction="row" alignItems="center" sx={{ top: '50%', transform: 'translateY(-50%)', position: 'relative' }} >
+                <Avatar
+                    alt="myPic"
+                    src={this.state.roomData.RoomPhotoUrl}
+                    sx={{ width: '56px', height: '56px', marginLeft: '50px' }}
+                />
+                <Typography
+                    sx={{ marginLeft: '30px', fontSize: '22px' }}
+                >
+                    {this.state.roomData.RoomName}
+                </Typography>
+            </Stack>)
     }
     render() {
         return (
             <Grid id="roomDiv" className={this.props.classes.roomStyle} item xs={10} md={9}>
                 <Grid id="roomNameDiv" container className={this.props.classes.roomNameDiv} >
                     <Grid item xs={11} >
-                        <Stack direction="row" alignItems="center" sx={{ top: '50%', transform: 'translateY(-50%)', position: 'relative' }} >
-                            <Avatar
-                                alt="myPic"
-                                src={this.state.roomData.RoomPhotoUrl}
-                                sx={{ width: '56px', height: '56px', marginLeft: '50px' }}
-                            />
-                            <Typography
-                                sx={{ marginLeft: '30px', fontSize: '22px' }}
-                            >
-                                {this.state.roomData.RoomName}
-                            </Typography>
-                        </Stack>
+                        {this.showRoomTitle()}
                     </Grid >
                     <Grid item xs={1}>
                         <Paper
@@ -116,12 +131,12 @@ class Room extends React.Component {
                             {/* <IconButton size="large" edge='False' sx={{ ...(roomStyles().topButtonStyle), color: "white" }}>
                                 <MoreIcon sx={{ height: "40px", width: "40px", position: "relative" }} />
                             </IconButton > */}
-                            <RoomMoreButton />
+                            <RoomMoreButton myUserData={this.props.myUserData} roomID={this.props.roomID} roomData={this.state.roomData} />
                         </Paper>
                     </Grid>
                 </Grid>
                 <div id="roomContentDiv" className={this.props.classes.roomContentDiv}>
-                    <GenerateMsg myUserData={this.props.myUserData} roomID={this.props.roomID} />
+                    <GenerateMsg myUserData={this.props.myUserData} roomID={this.props.roomID} roomData={this.state.roomData} />
                 </div>
                 <div id="roomSubmitDiv" className={this.props.classes.roomSubmitDiv}>
                     <textarea

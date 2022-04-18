@@ -104,7 +104,7 @@ class SideBar extends React.Component {
                             alignItems="center"
                             elevation={0}
                             component={Stack}>
-                            <MyProfile userName={this.props.myUserData.UserName} />
+                            <MyProfile userData={this.props.myUserData} />
                         </Paper>
                     </Grid>
                 </Grid>
