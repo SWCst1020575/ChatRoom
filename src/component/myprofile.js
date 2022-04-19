@@ -36,22 +36,42 @@ export default function MyProfile(props) {
         severity: 'error',
         content: ''
     });
+    // TODO: Finish user data update.
     const handleClickOK = () => {
-        var imgFileUrl = imageFileName;
-        if (imageFileName == '' || imageFileName == 'Select image as your photo.')
-            imgFile = props.userData.UserPhotoUrl;
+        setIsLoading(true);
+        var newUserName = document.getElementById("editProfileUserNameInput").value;
+        if (imageFileName == '' || imageFileName == 'Select image as your photo.') {
+            var imgFileUrl = props.userData.UserPhotoUrl;
+            firebase.database().ref('UserData/' + props.userData.UserID).update({
+                UserEmail: props.userData.UserEmail,
+                UserName: newUserName,
+                UserPhotoUrl: imgFileUrl,
+                UserRoomList: props.userData.UserRoomList
+            }).finally(() => {
+                setIsLoading(false);
+            });
+        }
         else {
-            setIsLoading(true);
             firebase.storage().ref().child('UserPhoto').child(props.userData.UserID).put(imageFile).catch(error => {
                 setIsLoading(false);
-                setAlertType({
-                    severity: 'error',
-                    content: error
-                })
-                setSnackbarOpen(true);
+                showError(error);
             }).then((snapshot) => {
-                
-                setIsLoading(false);
+                firebase.storage().ref().child('UserPhoto').child(props.userData.UserID).getDownloadURL().catch((error) => {
+                    setIsLoading(false);
+                    showError(error);
+                }).then(function (url) {
+                    firebase.database().ref('UserData/' + props.userData.UserID).update({
+                        UserEmail: props.userData.UserEmail,
+                        UserName: newUserName,
+                        UserPhotoUrl: url,
+                        UserRoomList: props.userData.UserRoomList
+                    }).catch((error) => {
+                        setIsLoading(false);
+                        showError(error);
+                    }).finally(() => {
+                        setIsLoading(false);
+                    });
+                });
             });
         }
         handleClose();
@@ -64,6 +84,13 @@ export default function MyProfile(props) {
     };
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
+    }
+    const showError = (error) => {
+        setAlertType({
+            severity: 'error',
+            content: error
+        })
+        setSnackbarOpen(true);
     }
     React.useEffect(() => {
         setMyUserName(props.userData.UserName);

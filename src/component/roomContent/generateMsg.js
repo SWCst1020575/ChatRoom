@@ -37,12 +37,12 @@ export default function GenerateMsg(props) {
     React.useEffect(() => {
         firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList').orderByChild("RoomID").equalTo(props.roomID).once('value', (snapshot) => {
             var roomList = snapshot.val();
-            var key = Object.keys(snapshot.val())[0];
-            firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList/' + key).update({
-                RoomFinalUpdateDate: props.roomData.RoomLatestContentDate,
+            //var key = Object.keys(roomList)[0];
+            console.log(props.roomData)
+            /*firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList/' + key).update({
                 RoomFinalUpdateNum: props.roomData.RoomContentNum,
                 RoomID: roomList[key].RoomID
-            })
+            })*/
         });
     }, [props.roomData])
     return (

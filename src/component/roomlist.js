@@ -36,7 +36,6 @@ export default function RoomList(props) {
         firebase.database().ref('UserData/' + props.userID + '/UserRoomList').orderByChild("RoomID").equalTo(RoomID).once('value', (snapshot) => {
             firebase.database().ref('UserData/' + props.userID + '/UserRoomList/' + Object.keys(snapshot.val())[0]).update({
                 RoomFinalUpdateNum: roomData.RoomContentNum,
-                RoomFinalUpdateDate: roomData.RoomLatestContentDate,
                 RoomID: RoomID
             })
         });

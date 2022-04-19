@@ -78,7 +78,8 @@ class Room extends React.Component {
             firebase.database().ref('RoomContent/' + this.props.roomID).push({
                 user: this.props.myUserData.UserID,
                 content: msgInput,
-                time: nowTime.getTime()
+                time: nowTime.getTime(),
+                type: 'message'
             })
             firebase.database().ref('RoomList/' + this.props.roomID).once("value", snapshot => {
                 var roomData = snapshot.val();

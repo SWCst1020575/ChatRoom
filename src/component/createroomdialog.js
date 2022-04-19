@@ -57,7 +57,7 @@ export default function CreateRoomDialog(props) {
                 if ('UserRoomList' in userData)
                     for (var key in userData['UserRoomList'])
                         roomList.push((userData.UserRoomList)[key]);
-                roomList.push({ RoomID: RoomKey, RoomFinalUpdateDate: nowTime.getTime(), RoomFinalUpdateNum: 0 });
+                roomList.push({ RoomID: RoomKey, RoomFinalUpdateNum: 0 });
                 firebase.database().ref('UserData/' + props.myID + '/UserRoomList').update(roomList).then(() => {
                     setAlertType({
                         severity: 'success',
