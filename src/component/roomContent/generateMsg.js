@@ -35,14 +35,15 @@ export default function GenerateMsg(props) {
         setPrevRoomID(props.roomID);
     }, [props.roomID])
     React.useEffect(() => {
+        if (props.myUserData.UserRoomList == null)
+            return;
         firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList').orderByChild("RoomID").equalTo(props.roomID).once('value', (snapshot) => {
             var roomList = snapshot.val();
-            //var key = Object.keys(roomList)[0];
-            console.log(props.roomData)
-            /*firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList/' + key).update({
+            var key = Object.keys(roomList)[0];
+            firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList/' + key).update({
                 RoomFinalUpdateNum: props.roomData.RoomContentNum,
                 RoomID: roomList[key].RoomID
-            })*/
+            })
         });
     }, [props.roomData])
     return (

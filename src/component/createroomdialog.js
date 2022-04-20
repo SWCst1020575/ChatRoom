@@ -9,7 +9,8 @@ import {
     ButtonGroup,
     Snackbar,
     Alert,
-    IconButton
+    IconButton,
+    CircularProgress
 } from '@mui/material';
 import {
     AddCircleOutline as AddRoomIcon,
@@ -28,19 +29,21 @@ const sideBarStyles = theme => ({
 export default function CreateRoomDialog(props) {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
     const [alertType, setAlertType] = React.useState({
         severity: 'error',
         content: ''
     });
     const [imageFileName, setImageFileName] = React.useState('Select image as room photo.');
+    const [imageFile, setImageFile] = React.useState('');
     const handleDialogClickOK = () => {
         var newRoomName = document.getElementById('createRoomNameInput').value;
-        var newRoomImageFileName = imageFileName
         if (newRoomName == '')
             newRoomName = 'Room Name';
-        if (newRoomImageFileName == 'Select image as room photo.')
-            newRoomImageFileName = 'default'
+
+        var newRoomImageFileName = 'default'
         var nowTime = new Date;
+        setIsLoading(true);
         firebase.database().ref('RoomList').push({
             RoomName: newRoomName,
             RoomPhotoUrl: newRoomImageFileName,
@@ -64,7 +67,37 @@ export default function CreateRoomDialog(props) {
                         content: 'Create room successfully'
                     })
                     setDialogOpen(false);
-                    setSnackbarOpen(true);
+                    if (imageFileName == 'Select image as room photo.') {
+                        setSnackbarOpen(true);
+                        setIsLoading(false);
+                    }
+                }).then(() => {
+                    if (imageFileName != 'Select image as room photo.')
+                        firebase.storage().ref().child('RoomPhoto').child(RoomKey).put(imageFile).catch(error => {
+                            setIsLoading(false);
+                            showError(error);
+                        }).then(() => {
+                            firebase.storage().ref().child('RoomPhoto').child(RoomKey).getDownloadURL()
+                                .catch((error) => {
+                                    setIsLoading(false);
+                                    showError(error);
+                                }).then(function (url) {
+                                    firebase.database().ref('RoomList/' + RoomKey).update({
+                                        RoomName: newRoomName,
+                                        RoomPhotoUrl: url,
+                                        RoomLatestContent: '(Empty)',
+                                        RoomLatestContentDate: nowTime.getTime(),
+                                        RoomContentNum: 0,
+                                        RoomMemberList: [props.myID],
+                                        RoomContent: {}
+                                    }).catch(error => {
+                                        setIsLoading(false);
+                                        showError(error);
+                                    }).finally(() => {
+                                        setIsLoading(false);
+                                    });
+                                });
+                        });
                 });
             });
             firebase.database().ref('RoomContent/' + RoomKey).push({
@@ -84,6 +117,13 @@ export default function CreateRoomDialog(props) {
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
     };
+    const showError = (error) => {
+        setAlertType({
+            severity: 'success',
+            content: 'Create room successfully'
+        })
+        setSnackbarOpen(true);
+    }
     const roomPhotoUpload = () => {
         document.getElementById("roomPhotoUploadFileButton").click();
     };
@@ -99,7 +139,7 @@ export default function CreateRoomDialog(props) {
                     <DialogContentText align='center' sx={{ marginLeft: '30px', marginRight: '30px' }}>
                         <IconButton onClick={roomPhotoUpload} size="large" sx={{ marginRight: "10px" }}>
                             <ImageIcon size="large" />
-                            <input onChange={() => {
+                            <input onChange={(event) => {
                                 var fileName = document.getElementById("roomPhotoUploadFileButton").value;
                                 const validExt = [".png", ".jpg", ".jpeg", ".png", ".ico", ".bmp"];
                                 var fileExt = fileName.substring(fileName.lastIndexOf('.'));
@@ -121,8 +161,10 @@ export default function CreateRoomDialog(props) {
                                     })
                                     setSnackbarOpen(true);
                                 }
-                                else
+                                else {
                                     setImageFileName(fileName)
+                                    setImageFile(event.target.files[0]);
+                                }
                             }} id="roomPhotoUploadFileButton" type="file" accept=".png,.jpg,.jpeg,.png,.ico,.bmp" hidden />
                         </IconButton>
                         {imageFileName}
@@ -155,7 +197,11 @@ export default function CreateRoomDialog(props) {
                     Logout
                 </Button>
             </ButtonGroup>
-
+            <Dialog open={isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>
+                <DialogContent >
+                    <CircularProgress size={70} />
+                </DialogContent>
+            </Dialog>
         </div >
     );
 }

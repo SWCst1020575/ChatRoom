@@ -5,6 +5,11 @@ import {
     Stack,
     Avatar,
     Typography,
+    Alert,
+    Snackbar,
+    CircularProgress,
+    Dialog,
+    DialogContent
 } from '@mui/material';
 import {
     Image as ImageIcon,
@@ -52,7 +57,14 @@ class Room extends React.Component {
         super(props);
         this.state = {
             roomData: { RoomName: 'Room Name' },
-            isInRoom: false
+            isInRoom: false,
+            alertType: {
+                severity: 'error',
+                content: 'This file type is not allowed'
+            },
+            imageFile: '',
+            snackbarOpen: false,
+            isLoading: false,
         }
     };
     componentDidUpdate(prevProps) {
@@ -88,16 +100,80 @@ class Room extends React.Component {
                 roomData['RoomLatestContentDate'] = nowTime.getTime();
                 componentThis.setState(roomData);
                 firebase.database().ref('RoomList/' + this.props.roomID).update(roomData);
-
-                for (var userIDinRoom of roomData['RoomMemberList']) {
-                    firebase.database().ref('UserData/' + userIDinRoom + '/UserRoomList').orderByChild("RoomID").equalTo(componentThis.props.roomID).once("value", userSnapshot => {
-                        var roomKey = Object.keys(userSnapshot.val())[0];
-                        firebase.database().ref('UserData/' + userIDinRoom + '/UserRoomList').child(roomKey).update(nowTime.getTime());
-                    })
-                }
             })
             document.getElementById('msgContent').value = '';
         }
+    }
+    handleSnackbarClose = () => {
+        var nowState = this.state;
+        nowState.snackbarOpen = false;
+        this.setState(nowState);
+    }
+    startLoading = (componentThis) => {
+        var nowState = componentThis.state;
+        nowState.isLoading = true;
+        componentThis.setState(nowState);
+    }
+    endLoading = (componentThis) => {
+        var nowState = componentThis.state;
+        nowState.isLoading = false;
+        componentThis.setState(nowState);
+    }
+    showError = (error, componentThis) => {
+        var nowState = componentThis.state;
+        nowState.alertType = {
+            severity: 'error',
+            content: error
+        }
+        nowState.snackbarOpen = true;
+        nowState.isLoading = false;
+        componentThis.setState(nowState);
+    }
+    sendImg = () => {
+        const componentThis = this;
+        var nowTime = new Date;
+        console.log(this.state.isSendImg)
+        if (!(this.state.isInRoom)) {
+            document.getElementById("roomSendPhotoButton").value = '';
+            return;
+        }
+        this.startLoading(this);
+        firebase.database().ref('RoomContent/' + this.props.roomID).push({
+            user: this.props.myUserData.UserID,
+            content: '',
+            time: nowTime.getTime(),
+            type: 'message'
+        }).then(snapshot => {
+            var newMsgKey = snapshot.key;
+            firebase.storage().ref().child('RoomContent').child(componentThis.props.roomID).child(newMsgKey).put(componentThis.state.imageFile).catch(error => {
+                componentThis.showError(error, componentThis);
+            }).then(() => {
+                firebase.storage().ref().child('RoomContent').child(componentThis.props.roomID).child(newMsgKey).getDownloadURL().catch((error) => {
+                    componentThis.showError(error, componentThis);
+                }).then(function (url) {
+                    firebase.database().ref('RoomContent').child(componentThis.props.roomID).child(newMsgKey).update({
+                        user: componentThis.props.myUserData.UserID,
+                        content: url,
+                        time: nowTime.getTime(),
+                        type: 'image'
+                    }).catch((error) => {
+                        componentThis.showError(error, componentThis);
+                    }).then(() => {
+                        firebase.database().ref('RoomList/' + componentThis.props.roomID).once("value", roomSnapshot => {
+                            var roomData = roomSnapshot.val();
+                            roomData['RoomContentNum'] = roomData['RoomContentNum'] + 1;
+                            roomData['RoomLatestContent'] = url;
+                            componentThis.setState(roomData);
+                            firebase.database().ref('RoomList/' + componentThis.props.roomID).update(roomData);
+                        })
+                    }).finally(() => {
+                        componentThis.endLoading(componentThis);
+                    });
+                });
+            });
+        })
+
+
     }
     showRoomTitle = () => {
         if (this.props.roomID != '')
@@ -113,6 +189,9 @@ class Room extends React.Component {
                     {this.state.roomData.RoomName}
                 </Typography>
             </Stack>)
+    }
+    clickSendImg = () => {
+        document.getElementById("roomSendPhotoButton").click();
     }
     render() {
         return (
@@ -144,9 +223,43 @@ class Room extends React.Component {
                         type="text" id="msgContent" placeholder="Send a message."
                     />
                     <div id="sendButtonDiv">
-                        <IconButton id="addImageButton" className={this.props.classes.sendButtonStyle}>
+                        <IconButton onClick={this.clickSendImg} id="addImageButton" className={this.props.classes.sendButtonStyle}>
                             <ImageIcon className={this.props.classes.sendButtonIconStyle} />
+                            <input onChange={(event) => {
+                                var fileName = document.getElementById("roomSendPhotoButton").value;
+                                const validExt = [".png", ".jpg", ".jpeg", ".png", ".ico", ".bmp"];
+                                var fileExt = fileName.substring(fileName.lastIndexOf('.'));
+                                var isValid = false;
+                                for (var i in validExt)
+                                    if (validExt[i] == fileExt)
+                                        isValid = true;
+                                if (fileName == '') {
+                                    var nowState = this.state;
+                                    nowState.alertType = {
+                                        severity: 'warning',
+                                        content: 'Please choose a file'
+                                    }
+                                    nowState.snackbarOpen = true;
+                                    this.setState(nowState);
+                                }
+                                else if (!isValid) {
+                                    var nowState = this.state;
+                                    nowState.alertType = {
+                                        severity: 'warning',
+                                        content: 'This file type is not allowed'
+                                    }
+                                    nowState.snackbarOpen = true;
+                                    this.setState(nowState);
+                                }
+                                else {
+                                    var nowState = this.state;
+                                    nowState.imageFile = event.target.files[0];
+                                    this.setState(nowState);
+                                    this.sendImg();
+                                }
+                            }} id="roomSendPhotoButton" type="file" accept=".png,.jpg,.jpeg,.png,.ico,.bmp" hidden />
                         </IconButton>
+
                         <IconButton id="sendMsgButton"
                             className={this.props.classes.sendButtonStyle}
                             onClick={() => this.sendMsg()}>
@@ -154,6 +267,16 @@ class Room extends React.Component {
                         </IconButton>
                     </div>
                 </div>
+                <Dialog open={this.state.isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>
+                    <DialogContent >
+                        <CircularProgress size={70} />
+                    </DialogContent>
+                </Dialog>
+                <Snackbar open={this.state.snackbarOpen} autoHideDuration={4000} onClose={this.handleSnackbarClose}>
+                    <Alert onClose={this.handleSnackbarClose} severity={this.state.alertType.severity} sx={{ fontSize: '18px', width: '100%' }}>
+                        {this.state.alertType.content}
+                    </Alert>
+                </Snackbar>
             </Grid>
         );
     };

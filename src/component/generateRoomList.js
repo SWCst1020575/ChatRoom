@@ -15,6 +15,10 @@ export default function GenerateRoomList(props) {
         setIsLoading(true);
         //firebase.database().ref('UserData/' + props.UserID + '/UserRoomList').once('value', (snapshot) => {
         var RoomListData = props.roomList;
+        if (RoomListData == null) {
+            setIsLoading(false);
+            return
+        }
         firebase.database().ref('RoomList').once('value', (roomSnapshot) => {
             var roomListData = roomSnapshot.val()
             for (var roomdata of RoomListData) {

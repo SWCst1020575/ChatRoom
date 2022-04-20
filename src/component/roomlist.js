@@ -23,7 +23,8 @@ export default function RoomList(props) {
     const [isLoading, setIsLoading] = React.useState(false);
     React.useEffect(() => {
         setIsLoading(true);
-        firebase.database().ref('RoomList/' + props.userListData.RoomID).once('value', (snapshot) => {
+        firebase.database().ref('RoomList/' + props.userListData.RoomID).off()
+        firebase.database().ref('RoomList/' + props.userListData.RoomID).on('value', (snapshot) => {
             var nowRoomData = snapshot.val();
             if (nowRoomData.RoomPhotoUrl == 'default')
                 nowRoomData.RoomPhotoUrl = '/src/img/defaultRoomIcon.png';

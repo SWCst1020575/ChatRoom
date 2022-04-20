@@ -114,7 +114,6 @@ export default function MyProfile(props) {
                         <IconButton onClick={roomPhotoUpload} size="large" sx={{ marginRight: "10px" }}>
                             <ImageIcon size="large" />
                             <input onChange={(event) => {
-
                                 var fileName = document.getElementById("roomPhotoUploadFileButton").value;
                                 const validExt = [".png", ".jpg", ".jpeg", ".png", ".ico", ".bmp"];
                                 var fileExt = fileName.substring(fileName.lastIndexOf('.'));
