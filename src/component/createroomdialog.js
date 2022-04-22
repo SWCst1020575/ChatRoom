@@ -88,8 +88,7 @@ export default function CreateRoomDialog(props) {
                                         RoomLatestContent: '(Empty)',
                                         RoomLatestContentDate: nowTime.getTime(),
                                         RoomContentNum: 0,
-                                        RoomMemberList: [props.myID],
-                                        RoomContent: {}
+                                        RoomMemberList: [props.myID]
                                     }).catch(error => {
                                         setIsLoading(false);
                                         showError(error);
@@ -136,7 +135,7 @@ export default function CreateRoomDialog(props) {
                 </Button>
                 <Dialog open={dialogOpen} onClose={handleDialogClose} >
                     <DialogTitle>Create new room</DialogTitle>
-                    <DialogContentText align='center' sx={{ marginLeft: '30px', marginRight: '30px' }}>
+                    <DialogContentText align='center' sx={{ marginLeft: '60px', marginRight: '60px' }}>
                         <IconButton onClick={roomPhotoUpload} size="large" sx={{ marginRight: "10px" }}>
                             <ImageIcon size="large" />
                             <input onChange={(event) => {

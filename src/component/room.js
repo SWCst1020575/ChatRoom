@@ -132,7 +132,6 @@ class Room extends React.Component {
     sendImg = () => {
         const componentThis = this;
         var nowTime = new Date;
-        console.log(this.state.isSendImg)
         if (!(this.state.isInRoom)) {
             document.getElementById("roomSendPhotoButton").value = '';
             return;

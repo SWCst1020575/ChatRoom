@@ -11,7 +11,7 @@ export default function GenerateRoomList(props) {
     const [displayRoomList, setDisplayRoomList] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
     React.useEffect(() => {
-        var roomList = [];
+
         setIsLoading(true);
         //firebase.database().ref('UserData/' + props.UserID + '/UserRoomList').once('value', (snapshot) => {
         var RoomListData = props.roomList;
@@ -19,8 +19,10 @@ export default function GenerateRoomList(props) {
             setIsLoading(false);
             return
         }
-        firebase.database().ref('RoomList').once('value', (roomSnapshot) => {
+        firebase.database().ref('RoomList').off();
+        firebase.database().ref('RoomList').on('value', (roomSnapshot) => {
             var roomListData = roomSnapshot.val()
+            var roomList = [];
             for (var roomdata of RoomListData) {
                 var nowRoomListData = roomdata;
                 nowRoomListData['RoomFinalUpdateDate'] = roomListData[roomdata.RoomID].RoomLatestContentDate;
@@ -35,7 +37,7 @@ export default function GenerateRoomList(props) {
     const roomListRender = () => {
         var renderList = [];
         for (var i in displayRoomList)
-            renderList.push(<RoomList key={displayRoomList[i].RoomID} setNowRoomID={props.setNowRoomID} userID={props.UserID} userListData={displayRoomList[i]} roomKey={i} />)
+            renderList.push(<RoomList key={displayRoomList[i].RoomID} setNowRoomID={props.setNowRoomID} myUserData={props.myUserData} userListData={displayRoomList[i]} roomKey={i} />)
         //for (var i = 0; i < 15; i++)
 
         return (renderList);

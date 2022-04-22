@@ -157,12 +157,12 @@ export default function MyProfile(props) {
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleClickOK}>OK</Button>
                 </DialogActions>
-                <Snackbar open={snackbarOpen} autoHideDuration={4000} onClose={handleSnackbarClose}>
-                    <Alert onClose={handleSnackbarClose} severity={alertType.severity} sx={{ fontSize: '18px', width: '100%' }}>
-                        {alertType.content}
-                    </Alert>
-                </Snackbar>
             </Dialog>
+            <Snackbar open={snackbarOpen} autoHideDuration={4000} onClose={handleSnackbarClose}>
+                <Alert onClose={handleSnackbarClose} severity={alertType.severity} sx={{ fontSize: '18px', width: '100%' }}>
+                    {alertType.content}
+                </Alert>
+            </Snackbar>
             <Dialog open={isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>
                 <DialogContent >
                     <CircularProgress size={70} />

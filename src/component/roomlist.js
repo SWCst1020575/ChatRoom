@@ -8,7 +8,7 @@ import {
     Container,
     Dialog,
     DialogContent,
-    CircularProgress
+    CircularProgress,
 } from '@mui/material'
 
 export default function RoomList(props) {
@@ -28,18 +28,21 @@ export default function RoomList(props) {
             var nowRoomData = snapshot.val();
             if (nowRoomData.RoomPhotoUrl == 'default')
                 nowRoomData.RoomPhotoUrl = '/src/img/defaultRoomIcon.png';
+            if (nowRoomData.RoomLatestContent.length > 24)
+                nowRoomData.RoomLatestContent = nowRoomData.RoomLatestContent.substr(0, 24) + '...'
             setRoomData(nowRoomData);
             setIsLoading(false);
+
         });
-    }, [props.userListData]);
+    }, [props.userListData, props.myUserData]);
     const clickRoom = (RoomID) => {
         props.setNowRoomID(RoomID);
-        firebase.database().ref('UserData/' + props.userID + '/UserRoomList').orderByChild("RoomID").equalTo(RoomID).once('value', (snapshot) => {
+        /*firebase.database().ref('UserData/' + props.userID + '/UserRoomList').orderByChild("RoomID").equalTo(RoomID).once('value', (snapshot) => {
             firebase.database().ref('UserData/' + props.userID + '/UserRoomList/' + Object.keys(snapshot.val())[0]).update({
                 RoomFinalUpdateNum: roomData.RoomContentNum,
                 RoomID: RoomID
             })
-        });
+        });*/
     }
     const showUnread = () => {
         if (roomData.RoomContentNum > props.userListData.RoomFinalUpdateNum)

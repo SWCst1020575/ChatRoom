@@ -14,21 +14,21 @@ export default function GenerateMsg(props) {
             return;
         setIsLoading(true);
         setMsgList([]);
-        if (prevRoomID != '')
-            firebase.database().ref('RoomContent/' + prevRoomID).off();
+
+        firebase.database().ref('RoomContent/' + prevRoomID).off();
         firebase.database().ref('RoomContent/' + props.roomID).on('value', snapshot => {
             var roomMsg = snapshot.val();
             var nowMsgList = [];
             for (var i in roomMsg) {
                 if (roomMsg[i].user == 'prompt')
-                    nowMsgList.push(<MsgDiv key={snapshot.key} content={roomMsg[i].content} type='prompt' />);
+                    nowMsgList.push(<MsgDiv key={i} content={roomMsg[i].content} userType='prompt' />);
                 else if (props.myUserData.UserID == roomMsg[i].user)
-                    nowMsgList.push(<MsgDiv key={snapshot.key} content={roomMsg[i].content} type='self' userID={roomMsg[i].user} />);
+                    nowMsgList.push(<MsgDiv key={i} content={roomMsg[i].content} userType='self' msgType={roomMsg[i].type} userID={roomMsg[i].user} />);
                 else
-                    nowMsgList.push(<MsgDiv key={snapshot.key} content={roomMsg[i].content} type='other' userID={roomMsg[i].user} />);
+                    nowMsgList.push(<MsgDiv key={i} content={roomMsg[i].content} userType='other' msgType={roomMsg[i].type} userID={roomMsg[i].user} />);
             }
-            setMsgList(nowMsgList);
 
+            setMsgList(nowMsgList);
             setIsLoading(false);
             document.getElementById('roomContentDiv').scrollTop = document.getElementById('roomContent').scrollHeight;
         })
@@ -46,6 +46,15 @@ export default function GenerateMsg(props) {
             })
         });
     }, [props.roomData])
+    //bug
+    React.useEffect(() => {
+        firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList').orderByChild("RoomID").equalTo(props.roomID).once('value', (roomSnapshot) => {
+            firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList/' + Object.keys(roomSnapshot.val())[0]).update({
+                RoomFinalUpdateNum: props.roomData.RoomContentNum,
+                RoomID: props.roomID
+            })
+        });
+    }, [props.roomData.RoomContentNum])
     return (
         <div id='roomContent'>
             {msgList}

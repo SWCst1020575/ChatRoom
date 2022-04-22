@@ -113,7 +113,7 @@ class SideBar extends React.Component {
                         setNowRoomID={this.props.setNowRoomID}
                         offLoading={this.props.offLoading}
                         roomList={this.props.myUserData.UserRoomList}
-                        UserID={this.props.myUserData.UserID}
+                        myUserData={this.props.myUserData}
                         className={this.props.classes.roomListStyle} />
                 </Container>
                 <Grid container id="sideBarBottom" sx={{ justifyContent: "center", alignItems: "center" }} className={this.props.classes.sideBarBottom}>
