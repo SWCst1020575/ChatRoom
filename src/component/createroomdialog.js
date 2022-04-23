@@ -79,7 +79,6 @@ export default function CreateRoomDialog(props) {
                         }).then(() => {
                             firebase.storage().ref().child('RoomPhoto').child(RoomKey).getDownloadURL()
                                 .catch((error) => {
-                                    setIsLoading(false);
                                     showError(error);
                                 }).then(function (url) {
                                     firebase.database().ref('RoomList/' + RoomKey).update({
@@ -90,10 +89,10 @@ export default function CreateRoomDialog(props) {
                                         RoomContentNum: 0,
                                         RoomMemberList: [props.myID]
                                     }).catch(error => {
-                                        setIsLoading(false);
                                         showError(error);
                                     }).finally(() => {
                                         setIsLoading(false);
+                                        document.getElementById("roomPhotoUploadFileButton").value = '';
                                     });
                                 });
                         });
@@ -129,8 +128,8 @@ export default function CreateRoomDialog(props) {
     return (
         <div id="buttonDivStyle">
             <ButtonGroup variant="contained" size="large" aria-label="small button group" sx={{ width: '100%', height: '100%' }}>
-                <Button className="sidebarButtonStyle" onClick={handleClickOpen} sx={{ ...(sideBarStyles().bottomButtonStyle), width: '50%', fontSize: '20px', fontFamily: 'functionFont' }}>
-                    <AddRoomIcon sx={{ width: '28px', height: '28px', marginRight: '8px' }} />
+                <Button  id="createButton" className="sidebarButtonStyle" onClick={handleClickOpen} sx={{ ...(sideBarStyles().bottomButtonStyle), width: '50%', fontSize: '20px', fontFamily: 'functionFont' }}>
+                    <AddRoomIcon id="createButtonIcon" sx={{ width: '28px', height: '28px', marginRight: '8px' }} />
                     Create
                 </Button>
                 <Dialog open={dialogOpen} onClose={handleDialogClose} >
@@ -190,9 +189,10 @@ export default function CreateRoomDialog(props) {
                 </Snackbar>
                 <Button
                     className="sidebarButtonStyle"
+                    id="logoutButton"
                     onClick={() => { props.logoutFun() }}
                     sx={{ ...(sideBarStyles().bottomButtonStyle), width: '50%', fontSize: '20px', fontFamily: 'functionFont' }}>
-                    <LogoutIcon sx={{ width: '28px', height: '28px', marginRight: '8px' }} />
+                    <LogoutIcon  id="logoutButtonIcon" sx={{ width: '28px', height: '28px', marginRight: '8px' }} />
                     Logout
                 </Button>
             </ButtonGroup>

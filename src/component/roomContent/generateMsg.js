@@ -10,29 +10,32 @@ export default function GenerateMsg(props) {
     const [isLoading, setIsLoading] = React.useState(false);
     const [prevRoomID, setPrevRoomID] = React.useState('');
     React.useEffect((prevProps) => {
-        if (props.roomID == '')
+        if (props.roomID == ''){
+            setMsgList([]);
             return;
+        }
         setIsLoading(true);
         setMsgList([]);
-
         firebase.database().ref('RoomContent/' + prevRoomID).off();
         firebase.database().ref('RoomContent/' + props.roomID).on('value', snapshot => {
             var roomMsg = snapshot.val();
             var nowMsgList = [];
             for (var i in roomMsg) {
                 if (roomMsg[i].user == 'prompt')
-                    nowMsgList.push(<MsgDiv key={i} content={roomMsg[i].content} userType='prompt' />);
+                    nowMsgList.push(<MsgDiv key={i} roomID={props.roomID} msgID={i} msgData={roomMsg[i]} userType='prompt' />);
                 else if (props.myUserData.UserID == roomMsg[i].user)
-                    nowMsgList.push(<MsgDiv key={i} content={roomMsg[i].content} userType='self' msgType={roomMsg[i].type} userID={roomMsg[i].user} />);
+                    nowMsgList.push(<MsgDiv key={i} roomID={props.roomID} msgID={i} msgData={roomMsg[i]} userType='self' />);
                 else
-                    nowMsgList.push(<MsgDiv key={i} content={roomMsg[i].content} userType='other' msgType={roomMsg[i].type} userID={roomMsg[i].user} />);
+                    nowMsgList.push(<MsgDiv key={i} roomID={props.roomID} msgID={i} msgData={roomMsg[i]} userType='other' />);
             }
 
             setMsgList(nowMsgList);
             setIsLoading(false);
-            document.getElementById('roomContentDiv').scrollTop = document.getElementById('roomContent').scrollHeight;
         })
         setPrevRoomID(props.roomID);
+        return () => {
+            firebase.database().ref('RoomContent/' + prevRoomID).off();
+        }
     }, [props.roomID])
     React.useEffect(() => {
         if (props.myUserData.UserRoomList == null)
@@ -46,15 +49,9 @@ export default function GenerateMsg(props) {
             })
         });
     }, [props.roomData])
-    //bug
     React.useEffect(() => {
-        firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList').orderByChild("RoomID").equalTo(props.roomID).once('value', (roomSnapshot) => {
-            firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList/' + Object.keys(roomSnapshot.val())[0]).update({
-                RoomFinalUpdateNum: props.roomData.RoomContentNum,
-                RoomID: props.roomID
-            })
-        });
-    }, [props.roomData.RoomContentNum])
+        document.getElementById('roomContentDiv').scrollTop = document.getElementById('roomContent').scrollHeight;
+    }, [msgList])
     return (
         <div id='roomContent'>
             {msgList}

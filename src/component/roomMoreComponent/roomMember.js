@@ -17,6 +17,8 @@ export default function RoomMember(props) {
     const [memberList, setMemberList] = React.useState([]);
     React.useEffect(() => {
         var nowMemberList = [];
+        if (!(props.isOpen))
+            return;
         setIsLoading(true);
         firebase.database().ref('UserData').once('value', (snapshot) => {
             var userData = snapshot.val();
@@ -37,13 +39,13 @@ export default function RoomMember(props) {
             setMemberList(nowMemberList);
             setIsLoading(false);
         });
-    }, [props.roomData])
+    }, [props.isOpen])
     const handleDialogClose = () => {
         props.setIsRoomMemberOpen(false);
     };
     return (
         <div>
-            <Dialog open={props.isOpen  } onClose={handleDialogClose} >
+            <Dialog open={props.isOpen} onClose={handleDialogClose} >
                 <DialogTitle>Room member list</DialogTitle>
                 <List sx={{ width: '100%', maxWidth: '500px', bgcolor: 'background.paper' }}>
                     {memberList}

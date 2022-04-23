@@ -13,7 +13,8 @@ import {
 } from '@mui/material';
 import {
     Image as ImageIcon,
-    Send as SendIcon
+    Send as SendIcon,
+    ArrowBackIosNew as BackIcon
 } from '@mui/icons-material';
 import { withStyles } from '@mui/styles';
 import RoomMoreButton from './roommore';
@@ -66,10 +67,30 @@ class Room extends React.Component {
             snackbarOpen: false,
             isLoading: false,
         }
+        var componentThis = this;
+        if (this.props.windowSize.width < 1000) {
+            firebase.database().ref('RoomList/' + this.props.roomID).on('value', (snapshot) => {
+                var RoomData = snapshot.val();
+                var nowState = componentThis.state;
+                if (RoomData.RoomPhotoUrl == 'default')
+                    RoomData.RoomPhotoUrl = '/src/img/defaultRoomIcon.png';
+                nowState["roomData"] = RoomData;
+                nowState["isInRoom"] = true;
+                componentThis.setState(nowState);
+            });
+            firebase.database().ref('RoomList/' + this.props.roomID + '/RoomContentNum').on('value', (snapshot) => {
+                firebase.database().ref('UserData/' + componentThis.props.myUserData.UserID + '/UserRoomList').orderByChild("RoomID").equalTo(componentThis.props.roomID).once('value', (roomSnapshot) => {
+                    if (roomSnapshot.exists())
+                        firebase.database().ref('UserData/' + componentThis.props.myUserData.UserID + '/UserRoomList/' + Object.keys(roomSnapshot.val())[0]).update({
+                            RoomFinalUpdateNum: snapshot.val()
+                        })
+                });
+            })
+        }
     };
     componentDidUpdate(prevProps) {
         var componentThis = this;
-        if (this.props.roomID != prevProps.roomID) {
+        if (this.props.roomID != prevProps.roomID && this.props.roomID != '') {
             firebase.database().ref('RoomList/' + prevProps.roomID).off();
             firebase.database().ref('RoomList/' + this.props.roomID).on('value', (snapshot) => {
                 var RoomData = snapshot.val();
@@ -80,8 +101,23 @@ class Room extends React.Component {
                 nowState["isInRoom"] = true;
                 componentThis.setState(nowState);
             });
+            firebase.database().ref('RoomList/' + prevProps.roomID + '/RoomContentNum').off();
+            firebase.database().ref('RoomList/' + this.props.roomID + '/RoomContentNum').on('value', (snapshot) => {
+                firebase.database().ref('UserData/' + componentThis.props.myUserData.UserID + '/UserRoomList').orderByChild("RoomID").equalTo(componentThis.props.roomID).once('value', (roomSnapshot) => {
+                    if (roomSnapshot.exists())
+                        firebase.database().ref('UserData/' + componentThis.props.myUserData.UserID + '/UserRoomList/' + Object.keys(roomSnapshot.val())[0]).update({
+                            RoomFinalUpdateNum: snapshot.val()
+                        })
+                });
+            })
         }
+
+
     };
+    componentWillUnmount() {
+        firebase.database().ref('RoomList/' + this.props.roomID).off();
+        firebase.database().ref('RoomList/' + this.props.roomID + '/RoomContentNum').off();
+    }
     sendMsg = () => {
         var msgInput = document.getElementById('msgContent').value;
         const componentThis = this;
@@ -175,31 +211,69 @@ class Room extends React.Component {
 
     }
     showRoomTitle = () => {
-        if (this.props.roomID != '')
-            return (<Stack direction="row" alignItems="center" sx={{ top: '50%', transform: 'translateY(-50%)', position: 'relative' }} >
-                <Avatar
-                    alt="myPic"
-                    src={this.state.roomData.RoomPhotoUrl}
-                    sx={{ width: '56px', height: '56px', marginLeft: '50px' }}
-                />
-                <Typography
-                    sx={{ marginLeft: '30px', fontSize: '22px' }}
-                >
-                    {this.state.roomData.RoomName}
-                </Typography>
-            </Stack>)
+        if (this.props.roomID != '') {
+            if (this.props.windowSize.width < 1000)
+                return (
+                    <Stack direction="row" alignItems="center" sx={{ top: '50%', transform: 'translateY(-50%)', position: 'relative' }} >
+                        <IconButton sx={{ marginLeft: '35px', width: '60px', height: '60px' }} onClick={() => this.props.setNowRoomID('')} >
+                            <BackIcon sx={{ width: '40px', height: '40px' }} />
+                        </IconButton>
+                        <Avatar
+                            alt="myPic"
+                            src={this.state.roomData.RoomPhotoUrl}
+                            id='nowRoomPhoto'
+                            sx={{ width: '56px', height: '56px', marginLeft: '50px' }}
+                        />
+                        <Typography
+                            id="nowRoomName"
+                            sx={{ marginLeft: '30px', fontSize: '22px' }}
+                        >
+                            {this.state.roomData.RoomName}
+                        </Typography>
+                    </Stack>
+                )
+            else
+                return (
+                    <Stack direction="row" alignItems="center" sx={{ top: '50%', transform: 'translateY(-50%)', position: 'relative' }} >
+                        <Avatar
+                            alt="myPic"
+                            src={this.state.roomData.RoomPhotoUrl}
+                            id='nowRoomPhoto'
+                            sx={{ width: '56px', height: '56px', marginLeft: '50px' }}
+                        />
+                        <Typography
+                            id="nowRoomName"
+                            sx={{ marginLeft: '30px', fontSize: '22px' }}
+                        >
+                            {this.state.roomData.RoomName}
+                        </Typography>
+                    </Stack>
+                )
+        }
     }
     clickSendImg = () => {
         document.getElementById("roomSendPhotoButton").click();
     }
+    getGridSize = () => {
+        if (this.props.windowSize.width < 1000)
+            return 12;
+        else
+            return 9;
+    }
+    getRoomTopGridSize = () => {
+        if (this.props.windowSize.width < 1000)
+            return [9, 3];
+        else
+            return [11, 1];
+    }
     render() {
         return (
-            <Grid id="roomDiv" className={this.props.classes.roomStyle} item xs={10} md={9}>
+            <Grid id="roomDiv" className={this.props.classes.roomStyle} item xs={this.getGridSize()}>
                 <Grid id="roomNameDiv" container className={this.props.classes.roomNameDiv} >
-                    <Grid item xs={11} >
+                    <Grid item xs={this.getRoomTopGridSize()[0]} >
                         {this.showRoomTitle()}
                     </Grid >
-                    <Grid item xs={1}>
+                    <Grid item xs={this.getRoomTopGridSize()[1]}>
                         <Paper
                             sx={{ position: 'relative', backgroundColor: 'transparent', color: 'white' }}
                             className={this.props.classes.functionText}
@@ -210,7 +284,7 @@ class Room extends React.Component {
                             {/* <IconButton size="large" edge='False' sx={{ ...(roomStyles().topButtonStyle), color: "white" }}>
                                 <MoreIcon sx={{ height: "40px", width: "40px", position: "relative" }} />
                             </IconButton > */}
-                            <RoomMoreButton myUserData={this.props.myUserData} roomID={this.props.roomID} roomData={this.state.roomData} />
+                            <RoomMoreButton setNowRoomID={this.props.setNowRoomID} myUserData={this.props.myUserData} roomID={this.props.roomID} roomData={this.state.roomData} />
                         </Paper>
                     </Grid>
                 </Grid>

@@ -11,7 +11,10 @@ export default function GenerateRoomList(props) {
     const [displayRoomList, setDisplayRoomList] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
     React.useEffect(() => {
-
+        if (props.roomList == null) {
+            setDisplayRoomList([]);
+            return;
+        }
         setIsLoading(true);
         //firebase.database().ref('UserData/' + props.UserID + '/UserRoomList').once('value', (snapshot) => {
         var RoomListData = props.roomList;
@@ -32,6 +35,9 @@ export default function GenerateRoomList(props) {
             setDisplayRoomList(roomList);
             setIsLoading(false);
         })
+        return () => {
+            firebase.database().ref('RoomList').off();
+        }
         //});
     }, [props.roomList]);
     const roomListRender = () => {
@@ -43,7 +49,7 @@ export default function GenerateRoomList(props) {
         return (renderList);
     }
     return (
-        <List className={props.className} sx={{ paddingColor: '#2c3e50', paddingTop: "0px", paddingBottom: '0px', width: '100%' }}>
+        <List id="roomList" className={props.className} sx={{ paddingColor: '#2c3e50', paddingTop: "0px", paddingBottom: '0px', width: '100%' }}>
             {roomListRender()}
             <Dialog open={isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>
                 <DialogContent >

@@ -19,29 +19,39 @@ export default function MsgDiv(props) {
     React.useEffect(() => {
         if (props.userType == 'prompt')
             return;
-        firebase.database().ref('UserData/' + props.userID).on("value", snapshot => {
+        firebase.database().ref('UserData/' + props.msgData.user).on("value", snapshot => {
             var userData = snapshot.val();
             setMsgUserName(userData.UserName);
             setMsgUserPhotoUrl(userData.UserPhotoUrl);
         })
+        return () => {
+            firebase.database().ref('UserData/' + props.msgData.user).off();
+        }
     }, []);
     React.useEffect(() => {
-
-        var contentList = (props.content).split('\n');
+        var contentList = (props.msgData.content).split('\n');
         var nowMsgContent = [];
         for (var i in contentList)
-            nowMsgContent.push(<Typography key={'content' + i} variant="body2" sx={{ fontSize: '20px' }}>{contentList[i]}</Typography>);
+            nowMsgContent.push(<Typography className='msgContent' key={'content' + i} variant="body2" sx={{ fontSize: '20px' }}>{contentList[i]}</Typography>);
         setMsgContent(nowMsgContent)
 
-    }, [props.content]);
+    }, [props.msgData.content]);
     const msgRender = () => {
-        if (props.msgType == 'message')
+        if (props.msgData.type == 'message')
             return msgContent;
-        else if (props.msgType == 'image')
+        else if (props.msgData.type == 'image')
             return (<CardMedia
                 component="img"
-                image={props.content}
+                image={props.msgData.content}
             />)
+    }
+    const delMsg = () => {
+        firebase.database().ref('RoomContent/' + props.roomID + '/' + props.msgID).update({
+            user: 'prompt',
+            content: 'The message was unsent.',
+            time: props.msgData.time,
+            type: 'message'
+        })
     }
     if (props.userType == 'other')
         return (
@@ -65,7 +75,7 @@ export default function MsgDiv(props) {
                             <Avatar src={msgUserPhotoUrl} sx={{ width: '50px', height: '50px', bgcolor: 'azure' }} />
                         }
                         action={
-                            <IconButton aria-label="delete">
+                            <IconButton onClick={() => delMsg()} aria-label="delete">
                                 <DeleteIcon />
                             </IconButton>
                         }
@@ -79,8 +89,8 @@ export default function MsgDiv(props) {
     else if (props.userType == 'prompt')
         return (
             <Paper sx={{ borderRadius: '8px', backgroundColor: 'rgba(100,100,100,0.2)', width: 'fit-content', maxWidth: '60%', margin: 'auto', marginTop: '15px', marginBottom: '15px' }}>
-                <Typography sx={{ fontSize: '18px', width: 'fit-content', margin: 'auto', paddingLeft: '40px', paddingRight: '40px' }} >
-                    {props.content}
+                <Typography className='promptMsgContent' sx={{ fontSize: '18px', width: 'fit-content', margin: 'auto', paddingLeft: '40px', paddingRight: '40px' }} >
+                    {props.msgData.content}
                 </Typography>
             </Paper >
         );

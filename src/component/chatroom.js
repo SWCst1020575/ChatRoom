@@ -21,7 +21,11 @@ class Chatroom extends React.Component {
         this.state = {
             nowRoomID: "",
             isLoading: true,
-            UserData: {}
+            UserData: {},
+            size: {
+                height: window.innerHeight,
+                width: window.innerWidth
+            }
         }
         this.nowUserData = {};
         let componentThis = this;
@@ -47,29 +51,70 @@ class Chatroom extends React.Component {
                 window.location.href = "/signin";
             }
         });
+
     };
     setNowRoomID = (roomID) => {
         var nowState = this.state;
         nowState["nowRoomID"] = roomID;
         this.setState(nowState);
     }
+    handleResize = (componentThis) => {
+
+    }
     componentDidUpdate() {
     };
     componentDidMount() {
-
+        var componentThis = this
+        window.addEventListener('resize', () => {
+            console.log('resize');
+            var nowState = componentThis.state;
+            nowState.size = {
+                height: window.innerHeight,
+                width: window.innerWidth
+            }
+            componentThis.setState({ nowState })
+        });
     };
+    componentWillUnmount() {
+        window.removeEventListener('resize');
+    }
     render() {
-        return (
-            <Grid container id="chatroomDiv">
-                <SideBar setNowRoomID={this.setNowRoomID} myUserData={this.state.UserData} />
-                <Room myUserData={this.state.UserData} roomID={this.state.nowRoomID} />
-                <Dialog open={this.state.isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>
-                    <DialogContent >
-                        <CircularProgress size={70} />
-                    </DialogContent>
-                </Dialog>
-            </Grid >
-        );
+        if (this.state.size.width < 1000) {
+            if (this.state.nowRoomID == '')
+                return (
+                    <Grid container id="chatroomDiv">
+                        <SideBar windowSize={this.state.size} setNowRoomID={this.setNowRoomID} myUserData={this.state.UserData} />
+                        <Dialog open={this.state.isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>
+                            <DialogContent >
+                                <CircularProgress size={70} />
+                            </DialogContent>
+                        </Dialog>
+                    </Grid >
+                );
+            else
+                return (
+                    <Grid container id="chatroomDiv">
+                        <Room windowSize={this.state.size} setNowRoomID={this.setNowRoomID} myUserData={this.state.UserData} roomID={this.state.nowRoomID} />
+                        <Dialog open={this.state.isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>
+                            <DialogContent >
+                                <CircularProgress size={70} />
+                            </DialogContent>
+                        </Dialog>
+                    </Grid >
+                );
+        }
+        else
+            return (
+                <Grid container id="chatroomDiv">
+                    <SideBar windowSize={this.state.size} setNowRoomID={this.setNowRoomID} myUserData={this.state.UserData} />
+                    <Room windowSize={this.state.size} setNowRoomID={this.setNowRoomID} myUserData={this.state.UserData} roomID={this.state.nowRoomID} />
+                    <Dialog open={this.state.isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>
+                        <DialogContent >
+                            <CircularProgress size={70} />
+                        </DialogContent>
+                    </Dialog>
+                </Grid >
+            );
     };
 }
 

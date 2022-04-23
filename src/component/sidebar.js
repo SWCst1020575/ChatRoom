@@ -23,16 +23,16 @@ const sideBarStyles = theme => ({
         overflowX: "hidden"
     },
     roomListDiv: {
-        height: 'calc(100% - 170px)',
+        height: '75%',
         width: '100%',
         paddingLeft: '8px',
         backgroundColor: '#2c3e50'
     },
     myProfileDiv: {
-        height: '100px',
+        height: '15%',
     },
     sideBarBottom: {
-        height: '70px'
+        height: '10%'
     },
     functionText: {
         height: '100%',
@@ -67,9 +67,15 @@ class SideBar extends React.Component {
 
         });
     }
+    getGridSize = () => {
+        if (this.props.windowSize.width < 1000)
+            return 12;
+        else
+            return 3;
+    }
     render() {
         return (
-            <Grid className={this.props.classes.sideBarStyle} item xs={2} md={3}>
+            <Grid className={this.props.classes.sideBarStyle} item xs={this.getGridSize()}>
                 <Grid container className={this.props.classes.myProfileDiv} id="profileDiv">
                     <Grid item xs={4}>
                         <Paper
@@ -81,6 +87,7 @@ class SideBar extends React.Component {
                             component={Stack}>
                             <Avatar
                                 alt="myPic"
+                                id="myPhoto"
                                 src={this.props.myUserData.UserPhotoUrl}
                                 sx={{ width: 64, height: 64, }}
                             />
@@ -92,7 +99,8 @@ class SideBar extends React.Component {
                             className={this.props.classes.functionText}
                             justifyContent="center"
                             elevation={0}
-                            component={Stack}>
+                            component={Stack}
+                            id="myName">
                             {this.props.myUserData.UserName}
                         </Paper>
                     </Grid>
@@ -117,7 +125,7 @@ class SideBar extends React.Component {
                         className={this.props.classes.roomListStyle} />
                 </Container>
                 <Grid container id="sideBarBottom" sx={{ justifyContent: "center", alignItems: "center" }} className={this.props.classes.sideBarBottom}>
-                    <CreateRoomDialog myID={this.props.myUserData.UserID} myEmail={this.props.myUserData.UserEmail} logoutFun={this.userLogout} />
+                    <CreateRoomDialog windowSize={this.props.windowSize} myID={this.props.myUserData.UserID} myEmail={this.props.myUserData.UserEmail} logoutFun={this.userLogout} />
                 </Grid>
             </Grid>
         );

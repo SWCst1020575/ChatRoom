@@ -5,10 +5,16 @@
     width: 100%;
     position: relative;
 }
-#roomDiv{
+.roomListPhoto{
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+#roomDiv {
     height: 100%;
 }
-#roomContentDiv{
+
+#roomContentDiv {
     margin: auto 0;
     padding: 0 0 0 0;
     width: 100%;
@@ -52,6 +58,7 @@
 #roomListDiv {
     padding-left: 0px;
     padding-right: 0px;
+    background-color: #273646;
 }
 
 #buttonDivStyle {
@@ -74,14 +81,14 @@
     width: 1px;
 }
 
-#roomList {
+.roomList {
     border-color: transparent !important;
     background-color: #2c3e50;
     border-top: 0.5;
     border-color: grey;
 }
 
-#roomList:hover {
+.roomList:hover {
     background-color: #435f7a;
 }
 
@@ -95,15 +102,17 @@
     background: #2c3e50;
     border-radius: 10px;
 }
+
 #roomListDiv>::-webkit-scrollbar-thumb {
     background: rgb(52, 96, 139);
     border-radius: 10px;
 }
+
 #roomListDiv>::-webkit-scrollbar-thumb:hover {
     background: #9f9f9f;
 }
 
-.othersMsg{
+.othersMsg {
     background-color: white;
 }
 
@@ -112,10 +121,117 @@
     background: #2c3e50;
     border-radius: 10px;
 }
+
 #roomContentDiv>::-webkit-scrollbar-thumb {
     background: rgb(52, 96, 139);
     border-radius: 10px;
 }
+
 #roomContentDiv>::-webkit-scrollbar-thumb:hover {
     background: #9f9f9f;
+}
+
+@media screen and (max-device-width: 900px) {
+    #profileDiv {
+        height: 8%;
+    }
+
+    #roomListDiv {
+        height: 86%;
+    }
+
+    #sideBarBottom {
+        height: 6%;
+    }
+
+    #myPhoto {
+        width: 100px;
+        height: 100px;
+    }
+    #myName{
+        font-size: 50px;
+    }
+    #myProfileButton{
+        width: 110px;
+        height: 110px;
+    }
+    #myProfileButtonIcon-1{
+        width: 62px;
+        height: 62px;
+        left: 12px;
+    }
+    #myProfileButtonIcon-2{
+        width: 62px;
+        height: 62px;
+        left: -12px;
+    }
+    .roomList{
+        height: 15%;
+        ;
+    }
+    .roomListPhoto{
+        width: 110px;
+        height: 110px;
+        margin-right: 30px;
+
+    }
+    .roomListRoomName{
+        font-size: 46px !important;
+    }
+    .roomListRoomLatestContent{
+        font-size: 40px !important;
+    }
+    #logoutButton,
+    #createButton{
+        font-size: 48px;
+    }
+    #logoutButtonIcon,
+    #createButtonIcon{
+        width: 36px !important;
+        height: 36px !important;
+    }
+    #roomNameDiv{
+        height: 7%;
+    }
+    #roomContentDiv{
+        height: 86%;
+    }
+    #roomSubmitDiv{
+        height: 7%;
+    }
+    #SpeedDial{
+        width: 80px;
+        height: 80px;
+    }
+    #SpeedDialIcon{
+        width: 65px;
+        height: 65px;
+    }
+    .SpeedDialAction{
+        width: 80px !important;
+        height: 80px !important;
+        padding-right: 70px;
+        font-size: 50px !important;
+    }
+    .SpeedDialActionIcon{
+        width: 50px !important;
+        height: 50px !important;
+    }
+    #nowRoomPhoto{
+        width: 90px;
+        height: 90px;
+    }
+    #nowRoomName{
+        font-size: 46px;
+    }
+    .msgContent{
+        font-size: 36px !important;
+    }
+    .promptMsgContent{
+        font-size: 28px !important;
+    }
+    #msgContent {
+        font-size: 36px !important;
+        line-height: 48px;
+    }    
 }

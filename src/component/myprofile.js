@@ -70,6 +70,7 @@ export default function MyProfile(props) {
                         showError(error);
                     }).finally(() => {
                         setIsLoading(false);
+                        document.getElementById("roomPhotoUploadFileButton").value = '';
                     });
                 });
             });
@@ -100,9 +101,9 @@ export default function MyProfile(props) {
     };
     return (
         <div>
-            <IconButton onClick={handleClickOpen} size="small" edge='False' sx={{ ...(sideBarStyles().buttonStyle), color: "white" }}>
-                <ProfileSettingIcon sx={{ height: "40px", width: "40px", left: "3px", position: "relative" }} />
-                <DropDownIcon sx={{ left: "-3px", position: "relative" }} />
+            <IconButton id='myProfileButton' onClick={handleClickOpen} size="small" edge='False' sx={{ ...(sideBarStyles().buttonStyle), color: "white" }}>
+                <ProfileSettingIcon id='myProfileButtonIcon-1' sx={{ height: "40px", width: "40px", left: "3px", position: "relative" }} />
+                <DropDownIcon id='myProfileButtonIcon-2' sx={{ left: "-3px", position: "relative" }} />
             </IconButton >
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>My profile</DialogTitle>
