@@ -41,12 +41,8 @@ export default function MyProfile(props) {
         setIsLoading(true);
         var newUserName = document.getElementById("editProfileUserNameInput").value;
         if (imageFileName == '' || imageFileName == 'Select image as your photo.') {
-            var imgFileUrl = props.userData.UserPhotoUrl;
             firebase.database().ref('UserData/' + props.userData.UserID).update({
-                UserEmail: props.userData.UserEmail,
-                UserName: newUserName,
-                UserPhotoUrl: imgFileUrl,
-                UserRoomList: props.userData.UserRoomList
+                UserName: newUserName
             }).finally(() => {
                 setIsLoading(false);
             });
@@ -61,10 +57,8 @@ export default function MyProfile(props) {
                     showError(error);
                 }).then(function (url) {
                     firebase.database().ref('UserData/' + props.userData.UserID).update({
-                        UserEmail: props.userData.UserEmail,
                         UserName: newUserName,
-                        UserPhotoUrl: url,
-                        UserRoomList: props.userData.UserRoomList
+                        UserPhotoUrl: url
                     }).catch((error) => {
                         setIsLoading(false);
                         showError(error);

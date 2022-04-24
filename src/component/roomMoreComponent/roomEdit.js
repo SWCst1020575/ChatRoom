@@ -43,11 +43,7 @@ export default function RoomEdit(props) {
                     }).then(function (url) {
                         firebase.database().ref('RoomList/' + props.roomID).update({
                             RoomName: newRoomName,
-                            RoomPhotoUrl: url,
-                            RoomLatestContent: props.roomData.RoomLatestContent,
-                            RoomLatestContentDate: props.roomData.RoomLatestContentDate,
-                            RoomContentNum: props.roomData.RoomContentNum,
-                            RoomMemberList: props.roomData.RoomMemberList
+                            RoomPhotoUrl: url
                         }).catch(error => {
                             setIsLoading(false);
                             showError(error);
@@ -59,12 +55,7 @@ export default function RoomEdit(props) {
             });
         else
             firebase.database().ref('RoomList/' + props.roomID).update({
-                RoomName: newRoomName,
-                RoomPhotoUrl: props.roomData.RoomPhotoUrl,
-                RoomLatestContent: props.roomData.RoomLatestContent,
-                RoomLatestContentDate: props.roomData.RoomLatestContentDate,
-                RoomContentNum: props.roomData.RoomContentNum,
-                RoomMemberList: props.roomData.RoomMemberList
+                RoomName: newRoomName
             }).catch(error => {
                 setIsLoading(false);
                 showError(error);

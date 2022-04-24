@@ -131,7 +131,7 @@
     background: #9f9f9f;
 }
 
-@media screen and (max-device-width: 900px) {
+@media only screen and (max-device-width: 900px) {
     #profileDiv {
         height: 8%;
     }

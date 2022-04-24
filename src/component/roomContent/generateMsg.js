@@ -33,6 +33,7 @@ export default function GenerateMsg(props) {
             setIsLoading(false);
         })
         setPrevRoomID(props.roomID);
+        
         return () => {
             firebase.database().ref('RoomContent/' + prevRoomID).off();
         }

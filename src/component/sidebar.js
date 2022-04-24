@@ -23,15 +23,16 @@ const sideBarStyles = theme => ({
         overflowX: "hidden"
     },
     roomListDiv: {
-        height: '75%',
+        height: '78%',
         width: '100%',
         paddingLeft: '8px',
         backgroundColor: '#2c3e50'
     },
     myProfileDiv: {
-        height: '15%',
+        height: '12%',
     },
     sideBarBottom: {
+        overflow: 'hidden',
         height: '10%'
     },
     functionText: {
@@ -122,7 +123,8 @@ class SideBar extends React.Component {
                         offLoading={this.props.offLoading}
                         roomList={this.props.myUserData.UserRoomList}
                         myUserData={this.props.myUserData}
-                        className={this.props.classes.roomListStyle} />
+                        className={this.props.classes.roomListStyle}
+                        notifyMsg={this.props.notifyMsg} />
                 </Container>
                 <Grid container id="sideBarBottom" sx={{ justifyContent: "center", alignItems: "center" }} className={this.props.classes.sideBarBottom}>
                     <CreateRoomDialog windowSize={this.props.windowSize} myID={this.props.myUserData.UserID} myEmail={this.props.myUserData.UserEmail} logoutFun={this.userLogout} />

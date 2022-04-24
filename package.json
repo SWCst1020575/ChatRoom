@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "webpack-dev-server --devtool eval"
+    "serve": "webpack-dev-server --devtool eval",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",

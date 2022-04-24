@@ -10,6 +10,7 @@ import RoomList from './roomlist';
 export default function GenerateRoomList(props) {
     const [displayRoomList, setDisplayRoomList] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
+    const [prevRoomList, setPrevRoomList] = React.useState(props.roomList);
     React.useEffect(() => {
         if (props.roomList == null) {
             setDisplayRoomList([]);
@@ -35,6 +36,24 @@ export default function GenerateRoomList(props) {
             setDisplayRoomList(roomList);
             setIsLoading(false);
         })
+        if (prevRoomList != null && props.roomList != null) {
+            if (prevRoomList.length > props.roomList.length)
+                props.notifyMsg('ChatRoom message', 'You have left a room.')
+            else if (prevRoomList.length < props.roomList.length)
+                props.notifyMsg('ChatRoom message', 'You have been added in a room.')
+        }
+        setPrevRoomList(props.roomList)
+        /*
+        firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList').off();
+        firebase.database().ref('UserData/' + props.myUserData.UserID + '/UserRoomList').on((snapshot) => {
+            console.log(snapshot.val())
+            if (snapshot.exists()) {
+                var myRoomList = [];
+                for (var i of snapshot.val())
+                    myRoomList.push(i.RoomID)
+                console.log(myRoomList)
+            }
+        })*/
         return () => {
             firebase.database().ref('RoomList').off();
         }

@@ -46,12 +46,12 @@ class Chatroom extends React.Component {
                     nowState.UserData = componentThis.nowUserData;
                     nowState.isLoading = false;
                     componentThis.setState({ nowState })
+                    
                 })
             } else {
                 window.location.href = "/signin";
             }
         });
-
     };
     setNowRoomID = (roomID) => {
         var nowState = this.state;
@@ -62,11 +62,11 @@ class Chatroom extends React.Component {
 
     }
     componentDidUpdate() {
+
     };
     componentDidMount() {
         var componentThis = this
         window.addEventListener('resize', () => {
-            console.log('resize');
             var nowState = componentThis.state;
             nowState.size = {
                 height: window.innerHeight,
@@ -76,14 +76,21 @@ class Chatroom extends React.Component {
         });
     };
     componentWillUnmount() {
-        window.removeEventListener('resize');
+        window.removeEventListener('resize', () => {
+            var nowState = componentThis.state;
+            nowState.size = {
+                height: window.innerHeight,
+                width: window.innerWidth
+            }
+            componentThis.setState({ nowState })
+        });
     }
     render() {
         if (this.state.size.width < 1000) {
             if (this.state.nowRoomID == '')
                 return (
                     <Grid container id="chatroomDiv">
-                        <SideBar windowSize={this.state.size} setNowRoomID={this.setNowRoomID} myUserData={this.state.UserData} />
+                        <SideBar notifyMsg={this.props.notifyMsg} windowSize={this.state.size} setNowRoomID={this.setNowRoomID} myUserData={this.state.UserData} />
                         <Dialog open={this.state.isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>
                             <DialogContent >
                                 <CircularProgress size={70} />
@@ -106,7 +113,7 @@ class Chatroom extends React.Component {
         else
             return (
                 <Grid container id="chatroomDiv">
-                    <SideBar windowSize={this.state.size} setNowRoomID={this.setNowRoomID} myUserData={this.state.UserData} />
+                    <SideBar notifyMsg={this.props.notifyMsg} windowSize={this.state.size} setNowRoomID={this.setNowRoomID} myUserData={this.state.UserData} />
                     <Room windowSize={this.state.size} setNowRoomID={this.setNowRoomID} myUserData={this.state.UserData} roomID={this.state.nowRoomID} />
                     <Dialog open={this.state.isLoading} PaperProps={{ style: { boxShadow: 'none', backgroundColor: 'transparent' } }}>
                         <DialogContent >

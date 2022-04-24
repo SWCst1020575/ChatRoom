@@ -92,11 +92,6 @@ class LoginForm extends React.Component {
                             <TextField id="inputEmail" className={classes.input} variant="outlined" label="Email" type="email" />
                             <PasswordInput idName="inputPassword" className={classes.input} />
                         </div>
-                        <div id="remember" className="checkbox">
-                            <label>
-                                <input type="checkbox" value="remember-me" /> Remember me
-                            </label>
-                        </div>
                         <button id="btnSignin" className="btn btn-lg btn-primary btn-block btn-signin" onClick={() => this.userSignin()}>Sign in</button>
                         <button id="btnGoogle" className="btn btn-lg btn-primary btn-block btn-google" onClick={() => this.userGoogle()}>
                             <img id="googleIcon" src="src/img/googleIcon.png" />
