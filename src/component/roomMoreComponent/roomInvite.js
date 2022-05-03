@@ -108,7 +108,7 @@ export default function RoomInvite(props) {
     return (
         <div>
             <Dialog open={props.isOpen} onClose={handleDialogClose} >
-                <DialogTitle>Edit room</DialogTitle>
+                <DialogTitle>Invite</DialogTitle>
                 <DialogContentText align='left' sx={{ marginLeft: '40px', width: '300px' }}>
                     Please enter the user's email.
                 </DialogContentText>

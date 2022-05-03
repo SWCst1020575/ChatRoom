@@ -50,6 +50,7 @@ export default function RoomEdit(props) {
                         }).finally(() => {
                             setIsLoading(false);
                             handleDialogClose();
+                            document.getElementById("roomPhotoUploadFileButton").value = '';
                         });
                     });
             });
