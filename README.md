@@ -37,10 +37,10 @@ Signup, Signin pages were rendered by React Router.&nbsp;&nbsp;If you haven't si
 #### Interface
 
 Sidebar
-![](mdimg/SidebarInterface.PNG)
+![](mdimg/SidebarInterface.png)
 
 Room
-![](mdimg/RoomInterface.PNG)
+![](mdimg/RoomInterface.png)
 
 <br>
 <br>
@@ -48,19 +48,19 @@ Room
 ### Function description
 
 Set user profile.
-![](mdimg/Myprofile.PNG)
+![](mdimg/Myprofile.png)
 
 Create a new room.
 ![](mdimg/NewRoom.png)
 
 Edit room profile.
-![](mdimg/EditRoom.PNG)
+![](mdimg/EditRoom.png)
 
 Show members in this room.
-![](mdimg/RoomMember.PNG)
+![](mdimg/RoomMember.png)
 
 Invite other user to this room.
-![](mdimg/RoomInvite.PNG)
+![](mdimg/RoomInvite.png)
 
 It will show notification if you join in a room of leave a room.
 ![](mdimg/ChromeNotification.png)
