@@ -1,8 +1,7 @@
 import {
-    Snackbar,
+    Alert
 } from '@mui/material'
 import { withStyles } from '@mui/styles'
-import { Alert, } from '@material-ui/lab'
 const alertStyles = theme => ({
     alertStyle: {
         position: 'absolute',

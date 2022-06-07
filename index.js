@@ -26,9 +26,26 @@ export class Root extends React.Component {
             databaseURL: "https://chatroom-dcb3f-default-rtdb.firebaseio.com",
         };
         firebase.initializeApp(this.config);
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!Notification) {
+                alert('Desktop notifications not available in your browser. Try Chromium.');
+                return;
+            }
+            if (Notification.permission !== 'granted')
+                Notification.requestPermission();
+        });
     };
+    notifyMsg(title, content) {
+        if (Notification.permission !== 'granted')
+            Notification.requestPermission();
+        else {
+            var notification = new Notification(title, {
+                icon: 'src/img/appIcon.png',
+                body: content,
+            });
+        }
+    }
     componentDidMount() {
-
     };
     renderAuthenticationTypeChange = () => {
         var nowState = this.state;
@@ -57,7 +74,6 @@ export class Root extends React.Component {
             );
     }
     checkLogined = () => {
-        console.log(12);
     }
     render() {
         return (
@@ -68,11 +84,13 @@ export class Root extends React.Component {
                     <Routes>
                         <Route path='/' element={
                             <Chatroom
+                                notifyMsg={this.notifyMsg}
                             />
                         } />
                         <Route path='/signin' element={
                             <LoginForm
                                 setAlertState={this.setAlertState}
+                                setUserData={this.setUserData}
                             />
                         } />
                         <Route path="/signup" element={
