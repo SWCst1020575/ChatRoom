@@ -1,31 +1,5 @@
 # Software Studio 2022 Spring Midterm Project
 
-### Scoring
-
-| **Basic components**                             | **Score** | **Check** |
-| :----------------------------------------------- | :-------: | :-------: |
-| Membership Mechanism                             | 15%       | Y         |
-| Firebase page                                    | 5%        | Y         |
-| Database read/write                              | 15%       | Y         |
-| RWD                                              | 15%       | Y         |
-| Chatroom                                         | 20%       | Y         |
-
-| **Advanced tools**                               | **Score** | **Check** |
-| :----------------------------------------------- | :-------: | :-------: |
-| Using React                                      | 10%       | Y         |
-| Third-Party Sign In                              | 1%        | Y         |
-| Notification                                     | 5%        | Y         |
-| CSS Animation                                    | 2%        | N         |
-| Security                                         | 2%        | Y         |
-
-| **Other useful functions**                         | **Score** | **Check** |
-| :----------------------------------------------- | :-------: | :-------: |
-| Profile picture                                   | 1%       | Y         |
-| Send image                                        | 1%       | Y         |
-| Unsend message                                    | 3%       | Y         |
-
----
-
 ### How to use
 
 You must sign up with your email or google account at first.&nbsp;&nbsp;(
