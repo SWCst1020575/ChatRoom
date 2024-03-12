@@ -68,5 +68,5 @@ All components in ChatRoom were rendered by React.
 
 ### Firebase page link
 
-&nbsp;&nbsp;&nbsp;&nbsp;[Firebase page](https://chatroom-dcb3f.firebaseapp.com/)
+&nbsp;&nbsp;&nbsp;&nbsp;~~[Firebase page]()~~ (deprecated)
 
